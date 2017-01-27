@@ -1,0 +1,8 @@
+Makefile
+Project.xcconfig
+TPJ2017_test3.xcodeproj
+addons.make
+bin/TPJ2017_test3Debug.app
+config.make
+openFrameworks-Info.plist
+
