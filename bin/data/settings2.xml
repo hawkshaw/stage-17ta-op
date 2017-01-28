@@ -1,11 +1,6 @@
-<group>
+<settings>
 	<average_FPS>0</average_FPS>
 	<minimum_FPS>0</minimum_FPS>
-	<DrawFireFlow>0</DrawFireFlow>
-	<DrawFireFluid>1</DrawFireFluid>
-	<DrawFireParticles>0</DrawFireParticles>
-	<DrawDelaunay>0</DrawDelaunay>
-	<DrawBoal>0</DrawBoal>
 	<fullscreen__F_>0</fullscreen__F_>
 	<show_gui__G_>0</show_gui__G_>
 	<flip_camera>1</flip_camera>
@@ -132,10 +127,6 @@
 			<reset>0</reset>
 		</draw_flow_res_2>
 	</mouse_right_button>
-	<test_param>
-		<testParam1>1</testParam1>
-		<testParam2>1</testParam2>
-	</test_param>
 	<visualizers>
 		<show_scalar>1</show_scalar>
 		<show_field>1</show_field>
@@ -151,4 +142,4 @@
 		<min_dot_size>2</min_dot_size>
 		<max_dot_size>10</max_dot_size>
 	</velocity_dots>
-</group>
+</settings>

@@ -8,6 +8,9 @@
 #include "ofxGui.h"
 #include "ofxFlowTools.h"
 #include "ofxRollingCam.h"
+#include "ofxPostGlitch.h"
+
+#include "ofxAVString.h"
 
 using namespace flowTools;
 
@@ -53,6 +56,7 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+    
     
         //Dwlaunay
         ofxDelaunay triangulation;
@@ -156,6 +160,10 @@ class ofApp : public ofBaseApp{
     ofParameter<bool>	doFullScreen;
     void				setFullScreen(bool& _value) { ofSetFullscreen(_value);}
     
+    ofParameterGroup	testParameters;
+    ofParameter<int>    testParam1;
+    ofParameter<int>    testParam2;
+    
     bool                b_DrawGui;
     
     // DRAW
@@ -178,5 +186,20 @@ class ofApp : public ofBaseApp{
     ofParameter<bool>   pb_DrawFireParticles;
     ofParameter<bool>   pb_DrawDelaunay;
     ofParameter<bool>   pb_DrawBoal;
+    
+    //Title Shake Logo
+    bool                b_TitleShake;
+    ofImage             imgTitleShake;
+    
+    //shake Fbo
+    ofFbo               myFbo;
+    ofxPostGlitch       myGlitch;
+    
+    //Name
+    ofxAVString avs;
+    vector<ofxAVString> v_avs;
+    ofTrueTypeFont font;
+    int             i_AvsId;
+
     
 };

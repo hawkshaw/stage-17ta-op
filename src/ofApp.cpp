@@ -5,7 +5,6 @@ void ofApp::setup(){
     //ofEnableSmoothing();
     
     ofEnableAlphaBlending();
-
     ofBackground(0);
 
     ofSetCircleResolution(100);
@@ -19,6 +18,7 @@ void ofApp::setup(){
     
     // Initial Allocation
     fluid.allocate(width, height, 0.5);
+    //fluid.allocate(width, height, GL_RGBA);
     
     // Seting the gravity set up & injecting the background image
     fluid.dissipation = 0.99;
@@ -38,7 +38,7 @@ void ofApp::setup(){
     
     // Adding constant forces
     //fluid.addConstantForce(ofPoint(width*0.5,height*0.85), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 10.f);
-    fluid.addConstantForce(ofPoint(width*0.5,height*0.85), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 10.f);
+    fluid.addConstantForce(ofPoint(width*0.5,height*0.7), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 10.f);
     
     
 //Fire Particle
@@ -167,8 +167,48 @@ void ofApp::setup(){
     b_DrawGui = true;
     lastTime = ofGetElapsedTimef();
     
-    //cam.setPosition(0, -100, 100);
+    //TitleShake
+    b_TitleShake = false;
+    imgTitleShake.load("titleshake.png");
     
+    //cam.setPosition(0, -100, 100);
+    cam.setDistance(420);
+    
+    
+    //Fbo
+    myFbo.allocate( ofGetWidth(), ofGetHeight(),GL_RGBA);
+    myGlitch.setup(&myFbo);
+    
+    
+/*String AVS*/
+    i_AvsId = 0;
+    font.loadFont(OF_TTF_SANS, 30);
+    avs.setup("YUKI TAKAHASHI");
+    ofxAVString avs1,avs2,avs3,avs4,avs5,avs6,avs7,avs8,avs9,avs10,avs11,avs12;
+    avs1.setup("YUKI TAKAHASHI");
+    avs2.setup("MANA YARITANI");
+    avs3.setup("MINAMI BABA");
+    avs4.setup("KYOHEI KIKUCHI");
+    avs5.setup("HARUKA NAKAI");
+    avs6.setup("SHIHO ONOZAWA");
+    avs7.setup("YURINA SHIKANO");
+    avs8.setup("KOKI HODAMA");
+    avs9.setup("MASARU MIZUOCHI");
+    avs10.setup("HIROYUKI SHIMA");
+    avs11.setup("MAKITO KOBAYASHI");
+    avs12.setup("GO NAKATANI");
+    v_avs.push_back(avs1);
+    v_avs.push_back(avs2);
+    v_avs.push_back(avs3);
+    v_avs.push_back(avs4);
+    v_avs.push_back(avs5);
+    v_avs.push_back(avs6);
+    v_avs.push_back(avs7);
+    v_avs.push_back(avs8);
+    v_avs.push_back(avs9);
+    v_avs.push_back(avs10);
+    v_avs.push_back(avs11);
+    v_avs.push_back(avs12);
 }
 
 //--------------------------------------------------------------
@@ -181,12 +221,15 @@ void ofApp::update(){
     
 //Fire Fluid
     if(pb_DrawFireFluid){
-        ofPoint m = ofPoint(mouseX,mouseY);
+        //center width*0.5,height*0.7
+        ofPoint m = ofPoint(width*0.5+100*(sin(0.01/2*ofGetElapsedTimeMillis()))/2,
+                            height*0.7+100*(min(cos(0.02/2*ofGetElapsedTimeMillis()),0.75))/2);
+        //ofPoint m = ofPoint(mouseX,mouseY);
         ofPoint d = (m - oldM)*10.0;
         oldM = m;
         ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
         c.normalize();
-        fluid.addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),3.0f);
+        fluid.addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),1.5f);
         //  Update
         //
         fluid.update();
@@ -243,10 +286,16 @@ void ofApp::update(){
     if(pb_DrawFireFlow){
         updateFlowTools();
     }
+    
+/*AVS*/
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    if(b_TitleShake){
+        myFbo.begin();
+    }
     ofBackground(0);
     
     ofPushStyle();
@@ -254,35 +303,59 @@ void ofApp::draw(){
     
     ofEnableBlendMode(OF_BLENDMODE_ALPHA);
     
+    
     cam.begin();
     rollCam.begin(); //rollCam begin
     
-    ofPushMatrix();
-    ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2);
-/*FlowTools*/
-    //if(doDrawCamBackground.get())drawSource();
-    if(pb_DrawFireFlow){
-        if(!toggleGuiDraw) {
-            ofHideCursor();
-            drawComposite();
-        }
-        else {
-            ofShowCursor();
-            drawComposite();
-        }
-    }
+
 //Fire Fluid
-    if(pb_DrawFireFluid){
-        fluid.draw();
+    ofPushMatrix();
+    {
+        ofTranslate(-width/2, -height/2);
+        if(pb_DrawFireFluid){
+            ofTranslate(ofPoint(0,-height*0.15,-400));
+            fluid.draw();
+            ofTranslate(ofPoint(400,0,100));
+            fluid.draw();
+            ofTranslate(ofPoint(-800,0,0));
+            fluid.draw();
+            ofTranslate(ofPoint(200,0,100));
+            fluid.draw();
+            ofTranslate(ofPoint(400,0,100));
+            fluid.draw();
+        }
     }
     ofPopMatrix();
 
+
 /*Fire Particle*/
-    if(pb_DrawFireParticles){
-        em.setFlow(1500);
-        //sys.debugDraw();
-        sys.draw();
+    ofPushMatrix();
+    {
+        if(pb_DrawFireParticles){
+            em.setFlow(1500);
+            //sys.debugDraw();
+            sys.draw();
+        }
     }
+    ofPopMatrix();
+    
+    
+    
+//AVS
+    {
+        ofPushMatrix();
+        if(avs.getLastMillis() + 1000 > ofGetElapsedTimeMillis()){
+            font.drawString(avs, 0, 0);
+        }
+        
+        for(int i=0;i<v_avs.size();i++){
+            if(v_avs[i].getLastMillis() + 1000 > ofGetElapsedTimeMillis()){
+                font.drawString(v_avs[i], -200, 0);
+            }
+        }
+        ofPopMatrix();
+    }
+    
     
     rollCam.end();  //rollCam end
     cam.end();
@@ -290,6 +363,23 @@ void ofApp::draw(){
     ofPopMatrix();
     ofPopStyle();
     
+
+/*FlowToolsTitle*/
+    ofPushStyle();
+    ofPushMatrix();
+    {
+        //ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2); //when in cam
+        //if(doDrawCamBackground.get())drawSource();
+        if(pb_DrawFireFlow){
+            ofSetColor(255, 255, 255, testParam1);
+            drawComposite();
+        }
+    }
+    ofPopMatrix();
+    ofPopStyle();
+    
+
+
     
     
 //triangle
@@ -319,7 +409,7 @@ void ofApp::draw(){
         const float f_triSoundLevel = 60.0;
         for (int i=0; i<nTri; i++) {
             ofSetColor( colors[i] );		//Set color
-            ofTriangle( vertices[ i*3 ] * min(2.0,0.8 +  ofRandom(0.5,1.0)*spectrum_ave_edge1*f_triSoundLevel),
+            ofTriangle(vertices[ i*3     ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge1*f_triSoundLevel),
                        vertices[ i*3 + 1 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge2*f_triSoundLevel),
                        vertices[ i*3 + 2 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge3*f_triSoundLevel));		//Draw triangle
         }
@@ -327,15 +417,35 @@ void ofApp::draw(){
         ofPopStyle();
     }
     
-/*FlowTools*/
+    
+    
+    if(b_TitleShake){
+        ofEnableAlphaBlending();
+        imgTitleShake.draw(30*ofRandom(-1.0,1.0), 30*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
+        //imgTitleShake.draw(50*ofRandom(-1.0,1.0), 50*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
+        imgTitleShake.draw((ofRandom(-1.0,1.0)-2)*ofGetWidth(), (ofRandom(-1.0,1.0)-2)*ofGetHeight(), ofGetWidth()*5, ofGetHeight()*5);
+    }
+    
+    
+    
+    if(b_TitleShake){
+        myFbo.end();
+        myGlitch.generateFx();
+        myFbo.draw(0, 0);
+    }
+
     ofPushStyle();
     if(b_DrawGui){
         drawGui();
+        ofSetColor(255);
+        ofDrawBitmapString(cam.getDistance(), 600, 300);
         ofShowCursor();
     }else{
         ofHideCursor();
     }
     ofPopStyle();
+
+    
 }
 
 //--------------------------------------------------------------
@@ -343,6 +453,8 @@ void ofApp::keyPressed(int key){
     switch(key){
         case 'f':
             ofToggleFullscreen();
+            myFbo.allocate( ofGetWidth(), ofGetHeight(),GL_RGBA);
+            myGlitch.setup(&myFbo);
             break;
         case 'd':
             b_DrawGui = !b_DrawGui;
@@ -364,11 +476,38 @@ void ofApp::keyPressed(int key){
     if (key=='5') {//Inputting optional distance.
         rollCam.setScale(1);
     }
+    if (key == '1') myGlitch.setFx(OFXPOSTGLITCH_CONVERGENCE	, ! myGlitch.getFx(OFXPOSTGLITCH_CONVERGENCE));
+    if (key == '2') myGlitch.setFx(OFXPOSTGLITCH_GLOW			, ! myGlitch.getFx(OFXPOSTGLITCH_GLOW));
+    if (key == '3') myGlitch.setFx(OFXPOSTGLITCH_SHAKER			, ! myGlitch.getFx(OFXPOSTGLITCH_SHAKER));
+    if (key == '4') myGlitch.setFx(OFXPOSTGLITCH_CUTSLIDER		, ! myGlitch.getFx(OFXPOSTGLITCH_CUTSLIDER));
+    if (key == '5') myGlitch.setFx(OFXPOSTGLITCH_TWIST			, ! myGlitch.getFx(OFXPOSTGLITCH_TWIST));
+    if (key == '6') myGlitch.setFx(OFXPOSTGLITCH_OUTLINE		, ! myGlitch.getFx(OFXPOSTGLITCH_OUTLINE));
+    if (key == '7') myGlitch.setFx(OFXPOSTGLITCH_NOISE			, ! myGlitch.getFx(OFXPOSTGLITCH_NOISE));
+    if (key == '8') myGlitch.setFx(OFXPOSTGLITCH_SLITSCAN		, ! myGlitch.getFx(OFXPOSTGLITCH_SLITSCAN));
+    if (key == '9') myGlitch.setFx(OFXPOSTGLITCH_SWELL			, ! myGlitch.getFx(OFXPOSTGLITCH_SWELL));
+    if (key == '0') myGlitch.setFx(OFXPOSTGLITCH_INVERT			, ! myGlitch.getFx(OFXPOSTGLITCH_INVERT));
+    
+    if (key == 'q') avs.play(0, 400, 400);
+    
+    if(key == OF_KEY_RETURN){
+        b_TitleShake=true;
+    }
+    if(key == OF_KEY_UP){
+        v_avs[i_AvsId].play(0,400,400);
+        i_AvsId = MIN(i_AvsId+1,v_avs.size()-1);
+    }
+    if(key == OF_KEY_DOWN){
+        v_avs[i_AvsId].play(0,400,400);
+        i_AvsId = MAX(i_AvsId-1,0);
+    }
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+    if(key == OF_KEY_RETURN){
+        b_TitleShake=false;
+    }
 }
 
 //--------------------------------------------------------------
@@ -384,12 +523,10 @@ void ofApp::mouseDragged(int x, int y, int button){
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
     triangulation.addPoint(ofPoint(x,y));
-
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
 }
 
 //--------------------------------------------------------------
@@ -477,7 +614,7 @@ void ofApp::setupGui() {
     gui.add(guiMinFPS.set("minimum FPS", 0, 0, 60));
 
     gui.add(pb_DrawFireFlow.set("DrawFireFlow", false));
-    gui.add(pb_DrawFireFluid.set("DrawFireFluid", false));
+    gui.add(pb_DrawFireFluid.set("DrawFireFluid", true));
     gui.add(pb_DrawFireParticles.set("DrawFireParticles", false));
     gui.add(pb_DrawDelaunay.set("DrawDelaunay", false));
     gui.add(pb_DrawBoal.set("DrawBoal", false));
@@ -543,6 +680,11 @@ void ofApp::setupGui() {
     visualizeParameters.add(velocityLineSmooth.set("line smooth", false));
     velocityLineSmooth.addListener(this, &ofApp::setVelocityLineSmooth);
     
+    testParameters.setName("test param");
+    testParameters.add(testParam1.set("testParam1", 1, 0, 255));
+    testParameters.add(testParam2.set("testParam2", 1, 0, 255));
+    gui.add(testParameters);
+    
     gui.setDefaultHeaderBackgroundColor(guiHeaderColor[guiColorSwitch]);
     gui.setDefaultFillColor(guiFillColor[guiColorSwitch]);
     guiColorSwitch = 1 - guiColorSwitch;
@@ -571,6 +713,7 @@ void ofApp::drawSource(int _x, int _y, int _width, int _height) {
     cameraFbo.draw(_x, _y, _width, _height);
     ofPopStyle();
 }
+
 
 void ofApp::updateFlowTools(){
     deltaTime = ofGetElapsedTimef() - lastTime;
