@@ -91,6 +91,8 @@ class ofApp : public ofBaseApp{
     float spectrum_ave_edge1;
     float spectrum_ave_edge2;
     float spectrum_ave_edge3;
+    
+    void drawTriangleBoal();
 
     
 /*Rolling Cam*/

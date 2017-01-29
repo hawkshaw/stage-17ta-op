@@ -13,7 +13,7 @@ void ofApp::setup(){
     
     
 //Fire Fluid
-    width = ofGetWidth();
+    width = ofGetWidth()/4;
     height = ofGetHeight();
     
     // Initial Allocation
@@ -182,7 +182,7 @@ void ofApp::setup(){
     
 /*String AVS*/
     i_AvsId = 0;
-    font.loadFont(OF_TTF_SANS, 30);
+    font.loadFont(OF_TTF_SANS, 100);
     avs.setup("YUKI TAKAHASHI");
     ofxAVString avs1,avs2,avs3,avs4,avs5,avs6,avs7,avs8,avs9,avs10,avs11,avs12;
     avs1.setup("YUKI TAKAHASHI");
@@ -210,6 +210,7 @@ void ofApp::setup(){
     v_avs.push_back(avs11);
     v_avs.push_back(avs12);
 }
+
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -327,7 +328,32 @@ void ofApp::draw(){
     }
     ofPopMatrix();
 
+//triangle boal
+    if(pb_DrawBoal){
+        ofPushStyle();
+        ofEnableAlphaBlending();
+        ofPushMatrix();						//Store the coordinate system
+        //Move the coordinate center to screen's center
+        //ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
+        ofTranslate(ofPoint(0,-height*0.15,-400));
+        drawTriangleBoal();
+        ofTranslate(ofPoint(400,0,100));
+        drawTriangleBoal();
+        ofTranslate(ofPoint(-800,0,0));
+        drawTriangleBoal();
+        ofTranslate(ofPoint(200,0,100));
+        drawTriangleBoal();
+        ofTranslate(ofPoint(400,0,100));
+        drawTriangleBoal();
+        
+        //Calculate the rotation angle
+        ofPopMatrix();	//Restore the coordinate system
+        ofPopStyle();
+    }
 
+    
+    
+    
 /*Fire Particle*/
     ofPushMatrix();
     {
@@ -349,9 +375,14 @@ void ofApp::draw(){
         }
         
         for(int i=0;i<v_avs.size();i++){
+            ofPushMatrix();
+            ofRotateY(i*30);
+            ofTranslate(0, 0,300);
+            ofScale(0.1,0.1,0.1);
             if(v_avs[i].getLastMillis() + 1000 > ofGetElapsedTimeMillis()){
                 font.drawString(v_avs[i], -200, 0);
             }
+            ofPopMatrix();
         }
         ofPopMatrix();
     }
@@ -391,31 +422,6 @@ void ofApp::draw(){
     }
     
     
-//triangle boal
-    if(pb_DrawBoal){
-        ofPushStyle();
-        ofEnableAlphaBlending();
-        ofPushMatrix();						//Store the coordinate system
-        //Move the coordinate center to screen's center
-        ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
-        //ofScale(2.0, 2.0);
-        
-        //Calculate the rotation angle
-        float time = ofGetElapsedTimef();	//Get time in seconds
-        float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
-        ofRotate( angle, 0, 1, 0 );			//Rotate the coordinate system along y-axe
-        
-        //Draw the triangles
-        const float f_triSoundLevel = 60.0;
-        for (int i=0; i<nTri; i++) {
-            ofSetColor( colors[i] );		//Set color
-            ofTriangle(vertices[ i*3     ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge1*f_triSoundLevel),
-                       vertices[ i*3 + 1 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge2*f_triSoundLevel),
-                       vertices[ i*3 + 2 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge3*f_triSoundLevel));		//Draw triangle
-        }
-        ofPopMatrix();	//Restore the coordinate system
-        ofPopStyle();
-    }
     
     
     
@@ -439,6 +445,7 @@ void ofApp::draw(){
         drawGui();
         ofSetColor(255);
         ofDrawBitmapString(cam.getDistance(), 600, 300);
+        ofDrawBitmapString(sound.getPosition(), 600, 350);
         ofShowCursor();
     }else{
         ofHideCursor();
@@ -488,7 +495,17 @@ void ofApp::keyPressed(int key){
     if (key == '0') myGlitch.setFx(OFXPOSTGLITCH_INVERT			, ! myGlitch.getFx(OFXPOSTGLITCH_INVERT));
     
     if (key == 'q') avs.play(0, 400, 400);
-    
+
+    if (key == 'x'){
+        rollCam.setPos(ofRandom(-60,60),0,0);
+    }
+    if (key == 'y'){
+        rollCam.setPos(0,ofRandom(-180,180),0);
+    }
+    if (key == 'z'){
+        rollCam.setPos(0,0,ofRandom(-45,45));
+    }
+
     if(key == OF_KEY_RETURN){
         b_TitleShake=true;
     }
@@ -500,8 +517,45 @@ void ofApp::keyPressed(int key){
         v_avs[i_AvsId].play(0,400,400);
         i_AvsId = MAX(i_AvsId-1,0);
     }
+    if(key == 'r'){
+        sound.setPosition(0);
+    }
+    if(key == 's'){
+        sound.setPaused(true);
+    }
+    if(key == 'p'){
+        sound.setPaused(false);
+    }
+    if(key == 'l'){
+        sound.setPosition(0.24);
+        sound.setSpeed(testParam2/128.0);
+    }
     
 }
+
+
+void ofApp::drawTriangleBoal(){
+    ofPushStyle();
+    ofPushMatrix();
+    ofScale(0.3, 0.3, 0.3);
+    
+    float time = ofGetElapsedTimef();	//Get time in seconds
+    float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
+    ofRotate( angle, 0, 1, 0 );			//Rotate the coordinate system along y-axe
+    
+    //Draw the triangles
+    const float f_triSoundLevel = 60.0;
+    for (int i=0; i<nTri; i++) {
+        ofSetColor( colors[i] );		//Set color
+        ofTriangle(vertices[ i*3     ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge1*f_triSoundLevel),
+                   vertices[ i*3 + 1 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge2*f_triSoundLevel),
+                   vertices[ i*3 + 2 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge3*f_triSoundLevel));		//Draw triangle
+    }
+    ofPopMatrix();
+    ofPopStyle();
+}
+
+
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
@@ -682,7 +736,7 @@ void ofApp::setupGui() {
     
     testParameters.setName("test param");
     testParameters.add(testParam1.set("testParam1", 1, 0, 255));
-    testParameters.add(testParam2.set("testParam2", 1, 0, 255));
+    testParameters.add(testParam2.set("testParam2", 128, 0, 255));
     gui.add(testParameters);
     
     gui.setDefaultHeaderBackgroundColor(guiHeaderColor[guiColorSwitch]);
