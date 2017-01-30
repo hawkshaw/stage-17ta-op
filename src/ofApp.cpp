@@ -3,115 +3,17 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     //ofEnableSmoothing();
-    
     ofEnableAlphaBlending();
     ofBackground(0);
-
     ofSetCircleResolution(100);
     
     //ofSetFullscreen(true);
-    
-    
-//Fire Fluid
-    width = ofGetWidth()/4;
-    height = ofGetHeight();
-    
-    // Initial Allocation
-    fluid.allocate(width, height, 0.5);
-    //fluid.allocate(width, height, GL_RGBA);
-    
-    // Seting the gravity set up & injecting the background image
-    fluid.dissipation = 0.99;
-    fluid.velocityDissipation = 0.99;
-    
-    fluid.setGravity(ofVec2f(0.0,0.0));
-    //fluid.setGravity(ofVec2f(0.0,0.0098));
-    
-    //  Set obstacle
-    fluid.begin();
-    ofSetColor(0,0);
-    ofSetColor(255);
-    
-    //ofCircle(width*0.5, height*0.35, 40);
-    fluid.end();
-    fluid.setUseObstacles(false);
-    
-    // Adding constant forces
-    //fluid.addConstantForce(ofPoint(width*0.5,height*0.85), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 10.f);
-    fluid.addConstantForce(ofPoint(width*0.5,height*0.7), ofPoint(0,-2), ofFloatColor(0.5,0.1,0.0), 10.f);
-    
-    
-//Fire Particle
-    sys.setup();
-    group.setup(sys);
-    group.setColor(ofxSPK::RangeC(ofColor(255, 255, 0, 255), ofColor(255, 0, 0, 255)),
-                   ofxSPK::RangeC(ofColor(255, 0, 255, 0), ofColor(255, 255, 0, 0)));
-    group.setLifeTime(0.5, 20);
-    group.setFriction(0.1);
-    group.setSize(3);
-    group.setGravity(ofVec3f(0, -100, 0));
-    group.setMass(0.1, 1);
-    group.reserve(10000);
-    em.setup(ofxSPK::Emitter::$Random::create(), group);
-    em.setForce(10, 50);
-    //	em.setZone(SPK::Line::create(toSPK(ofVec3f(100, 0, 0)),
-    //								 toSPK(ofVec3f(200, 0, 0))));
-    //	em.setZone(SPK::Point::create());
-    em.setZone(SPK::Sphere::create(toSPK(ofVec3f(100, 0, 0)), 50));
-    
-    //	em.setZone(SPK::Ring::create(toSPK(ofVec3f(100, 0, 0)), toSPK(ofVec3f(0, 1, 0)), 40, 160), false);
-    //	em.setZone(SPK::Plane::create(toSPK(ofVec3f(100, 0, 0)), toSPK(ofVec3f(0, 1, 0))), true);
-    //	em.setZone(SPK::Cylinder::create(toSPK(ofVec3f(100, 0, 0)), toSPK(ofVec3f(0, 1, 0)), 100, 200));
-    //	em.setZone(SPK::AABox::create(toSPK(ofVec3f(100, 0, 0)), toSPK(ofVec3f(100, 100, 100))), false);
-    
-    mod.setup(SPK::Obstacle::create(SPK::Plane::create(toSPK(ofVec3f(0, 0, 0)))), group);
-    mod.setPosition(0, -300, 0);
-    rot.setup(ofxSPK::Modifier::$PointMass::create(ofxSPK::Zone::$Sphere::create(toSPK(0, 0, 0), 300), SPK::INSIDE_ZONE, 20000, 20), group);
-    
-    
-//triangle boal
-    nTri = 1500;			//The number of the triangles
-    nVert= nTri * 3;		//The number of the vertices
-    
-    float Rad = 250;	//The sphere's radius
-    float rad = 25;	//Maximal triangle's ìradiusî
-    //(formally, it's the maximal coordinates'
-    //deviation from the triangle's center)
-    
-    //Fill the vertices array
-    vertices.resize( nVert );		//Set the array size
-    for (int i=0; i<nTri; i++) {	//Scan all the triangles
-        //Generate the center of the triangle
-        //as a random point on the sphere
-        
-        //Take the random point from
-        //cube [-1,1]x[-1,1]x[-1,1]
-        ofPoint center( ofRandom( -1, 1 ),
-                       ofRandom( -1, 1 ),
-                       ofRandom( -1, 1 ) );
-        center.normalize(); //Normalize vector's length to 1
-        center *= Rad;	//Now the center vector has
-        //length Rad
-        
-        //Generate the triangle's vertices
-        //as the center plus random point from
-        //[-rad, rad]x[-rad, rad]x[-rad, rad]
-        for (int j=0; j<3; j++) {
-            vertices[ i*3 + j ] =
-            center + ofPoint( ofRandom( -rad, rad ),
-                             ofRandom( -rad, rad ),
-                             ofRandom( -rad, rad ) );
-        }
-    }
-    
-    //Fill the array of triangles' colors
-    colors.resize( nTri );
-    for (int i=0; i<nTri; i++) {
-        //Take a random color from black to red
-        colors[i] = ofColor( ofRandom( 0, 255 ), 0, 0 ,ofRandom( 0, 255 ));
-    }
-    
-    
+
+    setupFireFluid();
+    setupFireParticle();
+    setupTriangleBoal();
+    setupFlowTools();
+
 /*    sound    */
     sound.loadSound( "spiral.mp3" );
     sound.setLoop( true );
@@ -121,38 +23,7 @@ void ofApp::setup(){
 /*Rolling Cam*/
     rollCam.setup();//rollCam's setup.
     rollCam.setCamSpeed(0.1);//rollCam's speed set;
-    
-/*FlowTools*/
-    ofSetVerticalSync(false);
-    ofSetLogLevel(OF_LOG_NOTICE);
-    
-    drawWidth = 1280;
-    drawHeight = 720;
-    // process all but the density on 16th resolution
-    flowWidth = drawWidth / 4;
-    flowHeight = drawHeight / 4;
-    
-    // FLOW & MASK
-    opticalFlow.setup(flowWidth, flowHeight);
-    velocityMask.setup(drawWidth, drawHeight);
-    
-    // FLUID & PARTICLES
-    fluidSimulation.setup(flowWidth, flowHeight, drawWidth, drawHeight);
-    particleFlow.setup(flowWidth, flowHeight, drawWidth, drawHeight);
-    
-    flowToolsLogoImage.load("flowtools.png");
-    fluidSimulation.addObstacle(flowToolsLogoImage.getTexture());
-    showLogo = false;
-    
-    velocityDots.setup(flowWidth / 4, flowHeight / 4);
-    
-    // VISUALIZATION
-    displayScalar.setup(flowWidth, flowHeight);
-    velocityField.setup(flowWidth / 4, flowHeight / 4);
-    temperatureField.setup(flowWidth / 4, flowHeight / 4);
-    pressureField.setup(flowWidth / 4, flowHeight / 4);
-    velocityTemperatureField.setup(flowWidth / 4, flowHeight / 4);
-    
+
     // MOUSE DRAW
     mouseForces.setup(flowWidth, flowHeight, drawWidth, drawHeight);
     
@@ -181,82 +52,19 @@ void ofApp::setup(){
     
     
 /*String AVS*/
-    i_AvsId = 0;
-    font.loadFont(OF_TTF_SANS, 100);
-    avs.setup("YUKI TAKAHASHI");
-    ofxAVString avs1,avs2,avs3,avs4,avs5,avs6,avs7,avs8,avs9,avs10,avs11,avs12;
-    avs1.setup("YUKI TAKAHASHI");
-    avs2.setup("MANA YARITANI");
-    avs3.setup("MINAMI BABA");
-    avs4.setup("KYOHEI KIKUCHI");
-    avs5.setup("HARUKA NAKAI");
-    avs6.setup("SHIHO ONOZAWA");
-    avs7.setup("YURINA SHIKANO");
-    avs8.setup("KOKI HODAMA");
-    avs9.setup("MASARU MIZUOCHI");
-    avs10.setup("HIROYUKI SHIMA");
-    avs11.setup("MAKITO KOBAYASHI");
-    avs12.setup("GO NAKATANI");
-    v_avs.push_back(avs1);
-    v_avs.push_back(avs2);
-    v_avs.push_back(avs3);
-    v_avs.push_back(avs4);
-    v_avs.push_back(avs5);
-    v_avs.push_back(avs6);
-    v_avs.push_back(avs7);
-    v_avs.push_back(avs8);
-    v_avs.push_back(avs9);
-    v_avs.push_back(avs10);
-    v_avs.push_back(avs11);
-    v_avs.push_back(avs12);
+    setupAVSName();
+
 }
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
 
-//Delaunay
-    if(pb_DrawDelaunay){
-        triangulation.triangulate();
-    }
-    
-//Fire Fluid
-    if(pb_DrawFireFluid){
-        //center width*0.5,height*0.7
-        ofPoint m = ofPoint(width*0.5+100*(sin(0.01/2*ofGetElapsedTimeMillis()))/2,
-                            height*0.7+100*(min(cos(0.02/2*ofGetElapsedTimeMillis()),0.75))/2);
-        //ofPoint m = ofPoint(mouseX,mouseY);
-        ofPoint d = (m - oldM)*10.0;
-        oldM = m;
-        ofPoint c = ofPoint(640*0.5, 480*0.5) - m;
-        c.normalize();
-        fluid.addTemporalForce(m, d, ofFloatColor(c.x,c.y,0.5)*sin(ofGetElapsedTimef()),1.5f);
-        //  Update
-        //
-        fluid.update();
-    }
-    
-//Fire Particle
-    if(pb_DrawFireParticles){
-        sys->setCameraPosition(toSPK(cam.getPosition()));
-        sys.update();
-        ofVec3f p;
-        p.x = ofSignedNoise(100, 0, 0, ofGetElapsedTimef() * 0.1) * 300;
-        p.y = ofSignedNoise(0, 100, 0, ofGetElapsedTimef() * 0.1) * 300;
-        p.z = ofSignedNoise(0, 0, 100, ofGetElapsedTimef() * 0.1) * 300;
-        
-        //	group.emitStatic(10, p);
-        //	group.emitRandom(10, p, ofxSPK::RangeF(10, 40));
-        //	group.emitStraight(10, p);
-        //	group.emitSpheric(10, p, ofxSPK::RangeF(10, 40), p.crossed(ofVec3f(1, 0, 0)), ofxSPK::RangeF(0, 0.2));
-        
-        em.setPosition(p);
-        em.rotate(0.3, ofVec3f(0, 1, 0));
-        em.rotate(0.1, ofVec3f(0, 0, 1));
-    }
-    
+    if(pb_DrawDelaunay)triangulation.triangulate();
+    if(pb_DrawFireFluid)updateFireFluid();
+    if(pb_DrawFireParticles)updateFireParticle();
+    updateTriangleBoal();
 
-    
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 
 /* sound */
@@ -284,11 +92,9 @@ void ofApp::update(){
     rollCam.update();   //rollCam's rotate update.
     
 /*FlowTools*/
-    if(pb_DrawFireFlow){
-        updateFlowTools();
-    }
+    if(pb_DrawFireFlow)updateFlowTools();
     
-/*AVS*/
+    updateAVSName();
     
 }
 
@@ -308,85 +114,11 @@ void ofApp::draw(){
     cam.begin();
     rollCam.begin(); //rollCam begin
     
-
-//Fire Fluid
-    ofPushMatrix();
-    {
-        ofTranslate(-width/2, -height/2);
-        if(pb_DrawFireFluid){
-            ofTranslate(ofPoint(0,-height*0.15,-400));
-            fluid.draw();
-            ofTranslate(ofPoint(400,0,100));
-            fluid.draw();
-            ofTranslate(ofPoint(-800,0,0));
-            fluid.draw();
-            ofTranslate(ofPoint(200,0,100));
-            fluid.draw();
-            ofTranslate(ofPoint(400,0,100));
-            fluid.draw();
-        }
-    }
-    ofPopMatrix();
-
-//triangle boal
-    if(pb_DrawBoal){
-        ofPushStyle();
-        ofEnableAlphaBlending();
-        ofPushMatrix();						//Store the coordinate system
-        //Move the coordinate center to screen's center
-        //ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
-        ofTranslate(ofPoint(0,-height*0.15,-400));
-        drawTriangleBoal();
-        ofTranslate(ofPoint(400,0,100));
-        drawTriangleBoal();
-        ofTranslate(ofPoint(-800,0,0));
-        drawTriangleBoal();
-        ofTranslate(ofPoint(200,0,100));
-        drawTriangleBoal();
-        ofTranslate(ofPoint(400,0,100));
-        drawTriangleBoal();
-        
-        //Calculate the rotation angle
-        ofPopMatrix();	//Restore the coordinate system
-        ofPopStyle();
-    }
-
+    if(pb_DrawFireFluid)drawFireFluid();
+    if(pb_DrawBoal)drawTriangleBoal();
+    if(pb_DrawFireParticles)drawFireParticle();
     
-    
-    
-/*Fire Particle*/
-    ofPushMatrix();
-    {
-        if(pb_DrawFireParticles){
-            em.setFlow(1500);
-            //sys.debugDraw();
-            sys.draw();
-        }
-    }
-    ofPopMatrix();
-    
-    
-    
-//AVS
-    {
-        ofPushMatrix();
-        if(avs.getLastMillis() + 1000 > ofGetElapsedTimeMillis()){
-            font.drawString(avs, 0, 0);
-        }
-        
-        for(int i=0;i<v_avs.size();i++){
-            ofPushMatrix();
-            ofRotateY(i*30);
-            ofTranslate(0, 0,300);
-            ofScale(0.1,0.1,0.1);
-            if(v_avs[i].getLastMillis() + 1000 > ofGetElapsedTimeMillis()){
-                font.drawString(v_avs[i], -200, 0);
-            }
-            ofPopMatrix();
-        }
-        ofPopMatrix();
-    }
-    
+    drawAVSName();
     
     rollCam.end();  //rollCam end
     cam.end();
@@ -394,45 +126,21 @@ void ofApp::draw(){
     ofPopMatrix();
     ofPopStyle();
     
-
-/*FlowToolsTitle*/
-    ofPushStyle();
-    ofPushMatrix();
-    {
-        //ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2); //when in cam
-        //if(doDrawCamBackground.get())drawSource();
-        if(pb_DrawFireFlow){
-            ofSetColor(255, 255, 255, testParam1);
-            drawComposite();
-        }
-    }
-    ofPopMatrix();
-    ofPopStyle();
+    if(pb_DrawFireFlow)drawFlowTools();
     
-
-
-    
-    
-//triangle
     if(pb_DrawDelaunay){
         ofPushStyle();
         ofNoFill();
         triangulation.draw();
         ofPopStyle();
     }
-    
-    
-    
-    
-    
+
     if(b_TitleShake){
         ofEnableAlphaBlending();
         imgTitleShake.draw(30*ofRandom(-1.0,1.0), 30*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
         //imgTitleShake.draw(50*ofRandom(-1.0,1.0), 50*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
         imgTitleShake.draw((ofRandom(-1.0,1.0)-2)*ofGetWidth(), (ofRandom(-1.0,1.0)-2)*ofGetHeight(), ofGetWidth()*5, ofGetHeight()*5);
     }
-    
-    
     
     if(b_TitleShake){
         myFbo.end();
@@ -532,30 +240,6 @@ void ofApp::keyPressed(int key){
     }
     
 }
-
-
-void ofApp::drawTriangleBoal(){
-    ofPushStyle();
-    ofPushMatrix();
-    ofScale(0.3, 0.3, 0.3);
-    
-    float time = ofGetElapsedTimef();	//Get time in seconds
-    float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
-    ofRotate( angle, 0, 1, 0 );			//Rotate the coordinate system along y-axe
-    
-    //Draw the triangles
-    const float f_triSoundLevel = 60.0;
-    for (int i=0; i<nTri; i++) {
-        ofSetColor( colors[i] );		//Set color
-        ofTriangle(vertices[ i*3     ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge1*f_triSoundLevel),
-                   vertices[ i*3 + 1 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge2*f_triSoundLevel),
-                   vertices[ i*3 + 2 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge3*f_triSoundLevel));		//Draw triangle
-    }
-    ofPopMatrix();
-    ofPopStyle();
-}
-
-
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
@@ -769,76 +453,4 @@ void ofApp::drawSource(int _x, int _y, int _width, int _height) {
 }
 
 
-void ofApp::updateFlowTools(){
-    deltaTime = ofGetElapsedTimef() - lastTime;
-    lastTime = ofGetElapsedTimef();
-    
-    simpleCam.update();
-    
-    if (simpleCam.isFrameNew()) {
-        ofPushStyle();
-        ofEnableBlendMode(OF_BLENDMODE_DISABLED);
-        cameraFbo.begin();
-        
-        if (doFlipCamera)
-            simpleCam.draw(cameraFbo.getWidth(), 0, -cameraFbo.getWidth(), cameraFbo.getHeight());  // Flip Horizontal
-        else
-            simpleCam.draw(0, 0, cameraFbo.getWidth(), cameraFbo.getHeight());
-        cameraFbo.end();
-        ofPopStyle();
-        
-        opticalFlow.setSource(cameraFbo.getTexture());
-        
-        // opticalFlow.update(deltaTime);
-        // use internal deltatime instead
-        opticalFlow.update();
-        
-        velocityMask.setDensity(cameraFbo.getTexture());
-        velocityMask.setVelocity(opticalFlow.getOpticalFlow());
-        velocityMask.update();
-    }
-    
-    
-    fluidSimulation.addVelocity(opticalFlow.getOpticalFlowDecay());
-    fluidSimulation.addDensity(velocityMask.getColorMask());
-    fluidSimulation.addTemperature(velocityMask.getLuminanceMask());
-    
-    mouseForces.update(deltaTime);
-    
-    for (int i=0; i<mouseForces.getNumForces(); i++) {
-        if (mouseForces.didChange(i)) {
-            switch (mouseForces.getType(i)) {
-                case FT_DENSITY:
-                    fluidSimulation.addDensity(mouseForces.getTextureReference(i), mouseForces.getStrength(i));
-                    break;
-                case FT_VELOCITY:
-                    fluidSimulation.addVelocity(mouseForces.getTextureReference(i), mouseForces.getStrength(i));
-                    particleFlow.addFlowVelocity(mouseForces.getTextureReference(i), mouseForces.getStrength(i));
-                    break;
-                case FT_TEMPERATURE:
-                    fluidSimulation.addTemperature(mouseForces.getTextureReference(i), mouseForces.getStrength(i));
-                    break;
-                case FT_PRESSURE:
-                    fluidSimulation.addPressure(mouseForces.getTextureReference(i), mouseForces.getStrength(i));
-                    break;
-                case FT_OBSTACLE:
-                    fluidSimulation.addTempObstacle(mouseForces.getTextureReference(i));
-                default:
-                    break;
-            }
-        }
-    }
-    
-    fluidSimulation.update();
-    
-    if (particleFlow.isActive()) {
-        particleFlow.setSpeed(fluidSimulation.getSpeed());
-        particleFlow.setCellSize(fluidSimulation.getCellSize());
-        particleFlow.addFlowVelocity(opticalFlow.getOpticalFlow());
-        particleFlow.addFluidVelocity(fluidSimulation.getVelocity());
-        //		particleFlow.addDensity(fluidSimulation.getDensity());
-        particleFlow.setObstacle(fluidSimulation.getObstacle());
-    }
-    particleFlow.update();
 
-}

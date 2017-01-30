@@ -56,6 +56,22 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+    void setupAVSName();
+    void updateAVSName();
+    void drawAVSName();
+    void setupFireFluid();
+    void updateFireFluid();
+    void drawFireFluid();
+    void setupFireParticle();
+    void updateFireParticle();
+    void drawFireParticle();
+    void setupTriangleBoal();
+    void updateTriangleBoal();
+    void drawTriangleBoal();
+    void setupFlowTools();
+    void updateFlowTools();
+    void drawFlowTools();
+
     
     
         //Dwlaunay
@@ -92,14 +108,13 @@ class ofApp : public ofBaseApp{
     float spectrum_ave_edge2;
     float spectrum_ave_edge3;
     
-    void drawTriangleBoal();
+    void drawOneTriangleBoal();
 
     
 /*Rolling Cam*/
     ofxRollingCam rollCam;    
     
     
-    void updateFlowTools();
 /*FlowTools*/
     // Camera
     ofVideoGrabber		simpleCam;
@@ -202,6 +217,7 @@ class ofApp : public ofBaseApp{
     vector<ofxAVString> v_avs;
     ofTrueTypeFont font;
     int             i_AvsId;
+    vector<ofVec3f> vv_AvsPos;//x y
 
     
 };

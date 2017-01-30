@@ -1,0 +1,105 @@
+/*
+ *
+ */
+#pragma once
+
+#ifndef __ofxTriangleBoal__
+#define __ofxTriangleBoal__
+
+#include "ofMain.h"
+#include "ofApp.h"
+
+void ofApp::setupTriangleBoal(){
+    
+    nTri = 1500;			//The number of the triangles
+    nVert= nTri * 3;		//The number of the vertices
+    
+    float Rad = 250;	//The sphere's radius
+    float rad = 25;	//Maximal triangle's √¨radius√Æ
+    //(formally, it's the maximal coordinates'
+    //deviation from the triangle's center)
+    
+    //Fill the vertices array
+    vertices.resize( nVert );		//Set the array size
+    for (int i=0; i<nTri; i++) {	//Scan all the triangles
+        //Generate the center of the triangle
+        //as a random point on the sphere
+        
+        //Take the random point from
+        //cube [-1,1]x[-1,1]x[-1,1]
+        ofPoint center( ofRandom( -1, 1 ),
+                       ofRandom( -1, 1 ),
+                       ofRandom( -1, 1 ) );
+        center.normalize(); //Normalize vector's length to 1
+        center *= Rad;	//Now the center vector has
+        //length Rad
+        
+        //Generate the triangle's vertices
+        //as the center plus random point from
+        //[-rad, rad]x[-rad, rad]x[-rad, rad]
+        for (int j=0; j<3; j++) {
+            vertices[ i*3 + j ] =
+            center + ofPoint( ofRandom( -rad, rad ),
+                             ofRandom( -rad, rad ),
+                             ofRandom( -rad, rad ) );
+        }
+    }
+    
+    //Fill the array of triangles' colors
+    colors.resize( nTri );
+    for (int i=0; i<nTri; i++) {
+        //Take a random color from black to red
+        colors[i] = ofColor( ofRandom( 0, 255 ), 0, 0 ,ofRandom( 0, 255 ));
+    }
+}
+
+
+void ofApp::updateTriangleBoal(){
+}
+
+void ofApp::drawTriangleBoal(){
+    ofPushStyle();
+    ofEnableAlphaBlending();
+    ofPushMatrix();						//Store the coordinate system
+    //Move the coordinate center to screen's center
+    //ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
+    ofTranslate(ofPoint(0,-height*0.15,-400));
+    drawOneTriangleBoal();
+    ofTranslate(ofPoint(400,0,100));
+    drawOneTriangleBoal();
+    ofTranslate(ofPoint(-800,0,0));
+    drawOneTriangleBoal();
+    ofTranslate(ofPoint(200,0,100));
+    drawOneTriangleBoal();
+    ofTranslate(ofPoint(400,0,100));
+    drawOneTriangleBoal();
+    
+    //Calculate the rotation angle
+    ofPopMatrix();	//Restore the coordinate system
+    ofPopStyle();
+}
+
+void ofApp::drawOneTriangleBoal(){
+    ofPushStyle();
+    ofPushMatrix();
+    ofScale(0.3, 0.3, 0.3);
+    
+    float time = ofGetElapsedTimef();	//Get time in seconds
+    float angle = time * 10;			//Compute angle. We rotate at speed 10 degrees per second
+    ofRotate( angle, 0, 1, 0 );			//Rotate the coordinate system along y-axe
+    
+    //Draw the triangles
+    const float f_triSoundLevel = 60.0;
+    for (int i=0; i<nTri; i++) {
+        ofSetColor( colors[i] );		//Set color
+        ofTriangle(vertices[ i*3     ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge1*f_triSoundLevel),
+                   vertices[ i*3 + 1 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge2*f_triSoundLevel),
+                   vertices[ i*3 + 2 ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge3*f_triSoundLevel));		//Draw triangle
+    }
+    ofPopMatrix();
+    ofPopStyle();
+}
+
+
+
+#endif
