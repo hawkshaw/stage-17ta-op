@@ -9,8 +9,9 @@
 #include "ofxFlowTools.h"
 #include "ofxRollingCam.h"
 #include "ofxPostGlitch.h"
-
 #include "ofxAVString.h"
+
+#include "ofxTimeLine.h"
 
 using namespace flowTools;
 
@@ -71,7 +72,9 @@ class ofApp : public ofBaseApp{
     void setupFlowTools();
     void updateFlowTools();
     void drawFlowTools();
-
+    void setupTimeLine();
+    void updateTimeLine();
+    void drawTimeLine();
     
     
         //Dwlaunay
@@ -218,6 +221,9 @@ class ofApp : public ofBaseApp{
     ofTrueTypeFont font;
     int             i_AvsId;
     vector<ofVec3f> vv_AvsPos;//x y
+    
+    //ofxTimeLine;
+    ofxTimeLine timeLine;
 
     
 };

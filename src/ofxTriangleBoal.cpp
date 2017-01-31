@@ -55,6 +55,25 @@ void ofApp::setupTriangleBoal(){
 
 
 void ofApp::updateTriangleBoal(){
+    /* sound */
+    ofSoundUpdate();
+    float *val = ofSoundGetSpectrum( soundN );
+    spectrum_ave = 0;
+    for ( int i=0; i<soundN; i++ ) {
+        spectrum_ave += val[i];
+    }
+    spectrum_ave /= soundN;
+    float smooth = 0.8;
+    float smooth2 = 0.7;
+    spectrum_ave_edge *= smooth;
+    spectrum_ave_edge = max(spectrum_ave_edge , spectrum_ave);//- spectrum_ave_pre);
+    spectrum_ave_edge1 *= smooth;
+    spectrum_ave_edge1 = spectrum_ave_edge1 * smooth2 + (1-smooth2) * max(spectrum_ave_edge1,spectrum_ave_edge * ofRandom(0.8,1.0));
+    spectrum_ave_edge2 *= smooth;
+    spectrum_ave_edge2 = spectrum_ave_edge2 * smooth2 + (1-smooth2) * max(spectrum_ave_edge2,spectrum_ave_edge * ofRandom(0.8,1.0));
+    spectrum_ave_edge3 *= smooth;
+    spectrum_ave_edge3 = spectrum_ave_edge3 * smooth2 + (1-smooth2) * max(spectrum_ave_edge3,spectrum_ave_edge * ofRandom(0.8,1.0));
+    spectrum_ave_pre = spectrum_ave;
 }
 
 void ofApp::drawTriangleBoal(){

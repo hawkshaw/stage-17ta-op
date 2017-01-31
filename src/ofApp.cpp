@@ -2,6 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    timeLine.setup();
+    
     //ofEnableSmoothing();
     ofEnableAlphaBlending();
     ofBackground(0);
@@ -14,13 +16,13 @@ void ofApp::setup(){
     setupTriangleBoal();
     setupFlowTools();
 
-/*    sound    */
-    sound.loadSound( "spiral.mp3" );
+    /*    sound    */
+    sound.loadSound("spiral.mp3");
     sound.setLoop( true );
     sound.play();
     spectrum_ave_pre = 0;
     
-/*Rolling Cam*/
+    /*   Rolling Cam   */
     rollCam.setup();//rollCam's setup.
     rollCam.setCamSpeed(0.1);//rollCam's speed set;
 
@@ -51,7 +53,7 @@ void ofApp::setup(){
     myGlitch.setup(&myFbo);
     
     
-/*String AVS*/
+    /*String AVS*/
     setupAVSName();
 
 }
@@ -59,40 +61,17 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    timeLine.update(sound.getPosition());
+    
+    ofSetWindowTitle(ofToString(ofGetFrameRate()));
 
     if(pb_DrawDelaunay)triangulation.triangulate();
     if(pb_DrawFireFluid)updateFireFluid();
     if(pb_DrawFireParticles)updateFireParticle();
+    if(pb_DrawFireFlow)updateFlowTools();
     updateTriangleBoal();
 
-    ofSetWindowTitle(ofToString(ofGetFrameRate()));
-
-/* sound */
-    ofSoundUpdate();
-    float *val = ofSoundGetSpectrum( soundN );
-    spectrum_ave = 0;
-    for ( int i=0; i<soundN; i++ ) {
-        spectrum_ave += val[i];
-    }
-    spectrum_ave /= soundN;
-    float smooth = 0.8;
-    float smooth2 = 0.7;
-    spectrum_ave_edge *= smooth;
-    spectrum_ave_edge = max(spectrum_ave_edge , spectrum_ave);//- spectrum_ave_pre);
-    spectrum_ave_edge1 *= smooth;
-    spectrum_ave_edge1 = spectrum_ave_edge1 * smooth2 + (1-smooth2) * max(spectrum_ave_edge1,spectrum_ave_edge * ofRandom(0.8,1.0));
-    spectrum_ave_edge2 *= smooth;
-    spectrum_ave_edge2 = spectrum_ave_edge2 * smooth2 + (1-smooth2) * max(spectrum_ave_edge2,spectrum_ave_edge * ofRandom(0.8,1.0));
-    spectrum_ave_edge3 *= smooth;
-    spectrum_ave_edge3 = spectrum_ave_edge3 * smooth2 + (1-smooth2) * max(spectrum_ave_edge3,spectrum_ave_edge * ofRandom(0.8,1.0));
-    spectrum_ave_pre = spectrum_ave;
-    //cout << spectrum_ave << endl;
-    
-/*Rolling Cam*/
     rollCam.update();   //rollCam's rotate update.
-    
-/*FlowTools*/
-    if(pb_DrawFireFlow)updateFlowTools();
     
     updateAVSName();
     
@@ -160,6 +139,7 @@ void ofApp::draw(){
     }
     ofPopStyle();
 
+    timeLine.draw();
     
 }
 
@@ -238,7 +218,6 @@ void ofApp::keyPressed(int key){
         sound.setPosition(0.24);
         sound.setSpeed(testParam2/128.0);
     }
-    
 }
 
 //--------------------------------------------------------------

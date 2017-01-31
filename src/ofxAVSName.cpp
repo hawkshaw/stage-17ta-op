@@ -18,18 +18,32 @@ void ofApp::setupAVSName(){
     avs1.setup("YUKI TAKAHASHI");
     vv_AvsPos.push_back(ofVec3f(30, 120, 15));
     avs2.setup("YURINA SHIKANO");
-    vv_AvsPos.push_back(ofVec3f(30, 0, 15));
+    vv_AvsPos.push_back(ofVec3f(-30, 0, -15));
     avs3.setup("SHIHO ONOZAWA");
     vv_AvsPos.push_back(ofVec3f(30, -120, 15));
-    avs4.setup("MAKITO KOBAYASHI");
-    avs5.setup("GO NAKATANI");
-    avs6.setup("HARUKA NAKAI");
-    avs7.setup("MANA YARITANI");
-    avs8.setup("KOKI HODAMA");
+
+    avs4.setup("MANA YARITANI");
+    vv_AvsPos.push_back(ofVec3f(0, 60, 15));
+    avs5.setup("KOKI HODAMA");
+    vv_AvsPos.push_back(ofVec3f(10, 60, 0));
+
+    avs6.setup("MAKITO KOBAYASHI");
+    vv_AvsPos.push_back(ofVec3f(0, -60, 15));
+    avs7.setup("GO NAKATANI");
+    vv_AvsPos.push_back(ofVec3f(10, -60, 0));
+    avs8.setup("HARUKA NAKAI");
+    vv_AvsPos.push_back(ofVec3f(20, -60, -15));
+    
     avs9.setup("HIROYUKI SHIMA");
+    vv_AvsPos.push_back(ofVec3f(20, 100, 0));
     avs10.setup("KYOHEI KIKUCHI");
+    vv_AvsPos.push_back(ofVec3f(30, 100, -15));
+
     avs11.setup("MASARU MIZUOCHI");
+    vv_AvsPos.push_back(ofVec3f(-10, -30, 15));
     avs12.setup("MINAMI BABA");
+    vv_AvsPos.push_back(ofVec3f(-20, -30, 0));
+
     v_avs.push_back(avs1);
     v_avs.push_back(avs2);
     v_avs.push_back(avs3);
