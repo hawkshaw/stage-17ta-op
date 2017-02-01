@@ -1,3 +1,5 @@
+.DS_Store
+bin/.DS_Store
 Makefile
 Project.xcconfig
 TPJ2017_test3.xcodeproj

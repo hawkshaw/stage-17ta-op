@@ -12,10 +12,10 @@ void ofxTimeLine::setup(){
     //start,end,ACT_ID,Param
     float timeLineData[STEP_NUM][4] = {
         {0.001,0.002,AID_AVS,0},
-        {0.003,0.004,AID_TRI_BOAL,0},
+        {0.003,0.01,AID_TRI_BOAL,0},
         {0.005,0.006,AID_AVS,0},
-        {0.007,0.008,AID_TRI_BOAL,0},
-        {0.009,0.010,AID_TRI_BOAL,0},
+        {0.03,0.04,AID_TRI_BOAL,0},
+        {0.05,0.06,AID_TRI_BOAL,0},
         {0.011,0.012,AID_AVS,0},
         {0.013,0.014,AID_FIRE_FLUID,0},
         {0.015,0.016,AID_FIRE_FLUID,0},
@@ -55,13 +55,10 @@ void ofxTimeLine::update(float pos){
 void ofxTimeLine::draw(){
     for(int i=0;i<ACT_ID_NUM;i++){
         bool buf = getState(i);
-        if(i==AID_AVS and buf){
-            cout << "got AVS" <<endl;
-        }
-        ofDrawBitmapString(buf, 800, i*30);
+        ofDrawBitmapString(buf, 800, (i+1)*30);
     }
     for(int i=0;i<STEP_NUM;i++){
-        ofDrawBitmapString(vb_TimeLineUsedFlag[i], 850, i*30);
+        ofDrawBitmapString(vb_TimeLineUsedFlag[i], 850, (i+1)*30);
     }
 }
 //--------------------------------------------------------------

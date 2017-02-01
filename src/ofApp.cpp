@@ -75,6 +75,12 @@ void ofApp::update(){
     
     updateAVSName();
     
+    if(timeLine.getState(AID_TRI_BOAL)){
+        plusTriangleBoal();
+    }else{
+        minusTriangleBoal();
+    }
+    
 }
 
 //--------------------------------------------------------------
@@ -139,8 +145,11 @@ void ofApp::draw(){
     }
     ofPopStyle();
 
-    timeLine.draw();
-    
+    if(b_DrawGui){
+        timeLine.draw();
+        ofDrawBitmapString(ofToString(i_TriBoalAppearCount), 800, 600);
+        ofDrawBitmapString(ofToString(i_TriBoalAppearCountBuf), 800, 640);
+    }
 }
 
 //--------------------------------------------------------------

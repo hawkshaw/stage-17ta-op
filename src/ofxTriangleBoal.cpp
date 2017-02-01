@@ -45,16 +45,25 @@ void ofApp::setupTriangleBoal(){
         }
     }
     
-    //Fill the array of triangles' colors
-    colors.resize( nTri );
-    for (int i=0; i<nTri; i++) {
-        //Take a random color from black to red
-        colors[i] = ofColor( ofRandom( 0, 255 ), 0, 0 ,ofRandom( 0, 255 ));
-    }
+
+
+    i_TriBoalAppearCount=10;
+    i_TriBoalAppearCountBuf = i_TriBoalAppearCount;
+
 }
 
 
 void ofApp::updateTriangleBoal(){
+    //Fill the array of triangles' colors
+    colors.resize( nTri );
+    for (int i=0; i<nTri; i++) {
+        //Take a random color from black to red
+        colors[i] = ofColor( ofRandom( 0, 255 ), 0, 0 ,(int)((1-(1.0*i_TriBoalAppearCountBuf/i_TriBoalAppearCount))*ofRandom( 0, 255 )));
+        //colors[i] = ofColor( ofRandom( 0, 255 ), 0, 0 ,(int)(0.1*ofRandom( 0, 255 )));
+        //ofSetColor(255, 255, 255, 255*(1-(i_TriBoalAppearCountBuf/i_TriBoalAppearCount)));
+        
+    }
+    
     /* sound */
     ofSoundUpdate();
     float *val = ofSoundGetSpectrum( soundN );
@@ -76,12 +85,23 @@ void ofApp::updateTriangleBoal(){
     spectrum_ave_pre = spectrum_ave;
 }
 
+void ofApp::plusTriangleBoal(){
+    i_TriBoalAppearCountBuf = max(0,i_TriBoalAppearCountBuf-1);
+    cout<<"plus Tri Angle"<<endl;
+}
+void ofApp::minusTriangleBoal(){
+    i_TriBoalAppearCountBuf = min(i_TriBoalAppearCount,i_TriBoalAppearCountBuf+1);
+    cout<<"minus Tri Angle"<<endl;
+}
+
+
 void ofApp::drawTriangleBoal(){
     ofPushStyle();
     ofEnableAlphaBlending();
     ofPushMatrix();						//Store the coordinate system
     //Move the coordinate center to screen's center
     //ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
+    ofTranslate(ofPoint(0,-200.0* pow((1.0*i_TriBoalAppearCountBuf/i_TriBoalAppearCount),2),0));
     ofTranslate(ofPoint(0,-height*0.15,-400));
     drawOneTriangleBoal();
     ofTranslate(ofPoint(400,0,100));

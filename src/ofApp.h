@@ -69,6 +69,9 @@ class ofApp : public ofBaseApp{
     void setupTriangleBoal();
     void updateTriangleBoal();
     void drawTriangleBoal();
+    void plusTriangleBoal();
+    void minusTriangleBoal();
+
     void setupFlowTools();
     void updateFlowTools();
     void drawFlowTools();
@@ -97,7 +100,7 @@ class ofApp : public ofBaseApp{
     ofxSPK::Modifier rot;
     
     
-/*triangle boal*/
+    /*triangle boal*/
     vector<ofPoint> vertices;
     vector<ofColor> colors;
     int nTri;		//The number of triangles
@@ -112,7 +115,8 @@ class ofApp : public ofBaseApp{
     float spectrum_ave_edge3;
     
     void drawOneTriangleBoal();
-
+    int i_TriBoalAppearCount;
+    int i_TriBoalAppearCountBuf;
     
 /*Rolling Cam*/
     ofxRollingCam rollCam;    
