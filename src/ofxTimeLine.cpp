@@ -11,16 +11,27 @@ ofxTimeLine::ofxTimeLine(){
 void ofxTimeLine::setup(){
     //start,end,ACT_ID,Param
     float timeLineData[STEP_NUM][4] = {
-        {0.001,0.002,AID_AVS,0},
-        {0.003,0.01,AID_TRI_BOAL,0},
+        {0.001*4,0.002*4,AID_AVS,0},
+        {0.003*4,0.004*4,AID_AVS,1},
+        {0.005*4,0.006*4,AID_AVS,2},
+        {0.007*4,0.008*4,AID_AVS,3},
+        {0.009*4,0.010*4,AID_AVS,4},
+        {0.011*4,0.012*4,AID_AVS,5},
+        {0.013*4,0.014*4,AID_AVS,6},
+        {0.015*4,0.016*4,AID_AVS,7},
+        {0.017*4,0.018*4,AID_AVS,8},
+
+        
+        //{0.001,0.002,AID_AVS,0},
+        //{0.003,0.01,AID_TRI_BOAL,0},
         {0.005,0.006,AID_AVS,0},
-        {0.03,0.04,AID_TRI_BOAL,0},
-        {0.05,0.06,AID_TRI_BOAL,0},
-        {0.011,0.012,AID_AVS,0},
-        {0.013,0.014,AID_FIRE_FLUID,0},
-        {0.015,0.016,AID_FIRE_FLUID,0},
-        {0.017,0.018,AID_FIRE_FLUID,0},
-        {0.019,0.02,AID_AVS,0},
+        //{0.03,0.04,AID_TRI_BOAL,0},
+        //{0.05,0.06,AID_TRI_BOAL,0},
+        //{0.011,0.012,AID_AVS,0},
+        //{0.013,0.014,AID_FIRE_FLUID,0},
+        //{0.015,0.016,AID_FIRE_FLUID,0},
+        //{0.017,0.018,AID_FIRE_FLUID,0},
+        //{0.019,0.02,AID_AVS,0},
     };
     bool onceFlag[ACT_ID_NUM] = {true,false,false,false,false};
     for(int i=0;i<STEP_NUM;i++){
@@ -32,6 +43,7 @@ void ofxTimeLine::setup(){
     for(int i=0;i<ACT_ID_NUM;i++){
         vb_ActState.push_back(false);
         vb_ActOnceFlag.push_back(onceFlag[i]);
+        vb_ActParam.push_back(-1);
     }
 }
 
@@ -42,6 +54,7 @@ void ofxTimeLine::update(float pos){
             if(vb_ActOnceFlag[vi_TimeLineActId[i]] && (vb_TimeLineUsedFlag[i])){
             }else{
                 vb_ActState[vi_TimeLineActId[i]]=true;
+                vb_ActParam[vi_TimeLineActId[i]]=vi_TimeLineParam[i];
                 vb_TimeLineUsedFlag[i]=true;
             }
         }else if (vb_TimeLineUsedFlag[i] && (pos >= vvf_TimeLineTime[i][1])){
@@ -84,5 +97,5 @@ bool ofxTimeLine::getState(int actId){
 }
 
 int ofxTimeLine::getParam(int actId){
-    return;
+    return vb_ActParam[actId];
 }

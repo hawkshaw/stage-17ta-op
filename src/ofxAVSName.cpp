@@ -59,6 +59,12 @@ void ofApp::setupAVSName(){
 }
 
 void ofApp::updateAVSName(){
+    int avsParam = timeLine.getParam(AID_AVS);
+    ofVec3f avsPos = vv_AvsPos[avsParam];
+    v_avs[avsParam].play(0,800,800);
+    //cout << (v_avs[avsParam].getTar()).size() << endl;
+    //cout << -20*(unsigned short)(v_avs[avsParam].getTar().size()) << endl;
+    rollCam.setPos(avsPos.x, avsPos.y, avsPos.z);
 }
 
 void ofApp::drawAVSName(){
@@ -70,11 +76,14 @@ void ofApp::drawAVSName(){
         
         for(int i=0;i<v_avs.size();i++){
             ofPushMatrix();
-            ofRotateY(i*30);
+            ofRotateZ(-vv_AvsPos[i].z);
+            ofRotateY(-vv_AvsPos[i].y);
+            ofRotateX(-vv_AvsPos[i].x);
             ofTranslate(0, 0,300);
+            //ofTranslate(0, 0,50);
             ofScale(0.1,0.1,0.1);
             if(v_avs[i].getLastMillis() + 1000 > ofGetElapsedTimeMillis()){
-                font.drawString(v_avs[i], -200, 0);
+                font.drawString(v_avs[i], -25*(unsigned short)(v_avs[i].getTar().size()), 0);
             }
             ofPopMatrix();
         }

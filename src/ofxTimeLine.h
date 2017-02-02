@@ -37,6 +37,7 @@ private:
     
     vector<bool> vb_ActState;
     vector<bool> vb_ActOnceFlag;
+    vector<int> vb_ActParam;
 };
 
 #endif

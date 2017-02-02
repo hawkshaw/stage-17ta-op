@@ -107,6 +107,7 @@ class ofApp : public ofBaseApp{
     int nVert;	//The number of the vertices equals nTri * 3
     
     ofSoundPlayer sound;
+    bool b_soundCountKey;
     float spectrum_ave;
     float spectrum_ave_pre;
     float spectrum_ave_edge;

@@ -87,13 +87,10 @@ void ofApp::updateTriangleBoal(){
 
 void ofApp::plusTriangleBoal(){
     i_TriBoalAppearCountBuf = max(0,i_TriBoalAppearCountBuf-1);
-    cout<<"plus Tri Angle"<<endl;
 }
 void ofApp::minusTriangleBoal(){
     i_TriBoalAppearCountBuf = min(i_TriBoalAppearCount,i_TriBoalAppearCountBuf+1);
-    cout<<"minus Tri Angle"<<endl;
 }
-
 
 void ofApp::drawTriangleBoal(){
     ofPushStyle();

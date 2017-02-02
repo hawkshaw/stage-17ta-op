@@ -24,7 +24,7 @@ void ofApp::setup(){
     
     /*   Rolling Cam   */
     rollCam.setup();//rollCam's setup.
-    rollCam.setCamSpeed(0.1);//rollCam's speed set;
+    rollCam.setCamSpeed(0.05);//rollCam's speed set;
 
     // MOUSE DRAW
     mouseForces.setup(flowWidth, flowHeight, drawWidth, drawHeight);
@@ -55,7 +55,8 @@ void ofApp::setup(){
     
     /*String AVS*/
     setupAVSName();
-
+    
+    b_soundCountKey=false;
 }
 
 
@@ -73,7 +74,7 @@ void ofApp::update(){
 
     rollCam.update();   //rollCam's rotate update.
     
-    updateAVSName();
+    if(timeLine.getState(AID_AVS))updateAVSName();
     
     if(timeLine.getState(AID_TRI_BOAL)){
         plusTriangleBoal();
@@ -163,6 +164,10 @@ void ofApp::keyPressed(int key){
         case 'd':
             b_DrawGui = !b_DrawGui;
             break;
+        case 't':
+            if(!b_soundCountKey)cout << "press " << sound.getPosition() << " ";
+            b_soundCountKey=true;
+            break;
     }
     if (key=='1') {//All Random.
         rollCam.setRandomScale(0.5, 1.5);
@@ -233,6 +238,12 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){
     if(key == OF_KEY_RETURN){
         b_TitleShake=false;
+    }
+    switch(key){
+        case 't':
+            cout << "release " << sound.getPosition() << endl;
+            b_soundCountKey=false;
+            break;
     }
 }
 
