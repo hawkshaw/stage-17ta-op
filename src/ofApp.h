@@ -126,6 +126,7 @@ class ofApp : public ofBaseApp{
 /*FlowTools*/
     // Camera
     ofVideoGrabber		simpleCam;
+    ofVideoPlayer       simpleMovie;
     bool				didCamUpdate;
     ftFbo				cameraFbo;
     ofParameter<bool>	doFlipCamera;
@@ -149,6 +150,9 @@ class ofApp : public ofBaseApp{
     
     ofImage				flowToolsLogoImage;
     bool				showLogo;
+    //show bar for opticalflow
+    bool                b_FlowToolsBarActivate;
+    int                 i_FlowToolsBarCount;
     
     // MouseDraw
     ftDrawMouseForces	mouseForces;

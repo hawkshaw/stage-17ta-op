@@ -26,14 +26,6 @@ void ofApp::setup(){
     rollCam.setup();//rollCam's setup.
     rollCam.setCamSpeed(0.05);//rollCam's speed set;
 
-    // MOUSE DRAW
-    mouseForces.setup(flowWidth, flowHeight, drawWidth, drawHeight);
-    
-    // CAMERA
-    simpleCam.setup(640, 480, true);
-    didCamUpdate = false;
-    cameraFbo.allocate(640, 480);
-    cameraFbo.black();
     
     // GUI
     setupGui();
@@ -123,9 +115,9 @@ void ofApp::draw(){
 
     if(b_TitleShake){
         ofEnableAlphaBlending();
-        imgTitleShake.draw(30*ofRandom(-1.0,1.0), 30*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
         //imgTitleShake.draw(50*ofRandom(-1.0,1.0), 50*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
         imgTitleShake.draw((ofRandom(-1.0,1.0)-2)*ofGetWidth(), (ofRandom(-1.0,1.0)-2)*ofGetHeight(), ofGetWidth()*5, ofGetHeight()*5);
+        imgTitleShake.draw(20*ofRandom(-1.0,1.0), 20*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
     }
     
     if(b_TitleShake){
@@ -231,6 +223,11 @@ void ofApp::keyPressed(int key){
     if(key == 'l'){
         sound.setPosition(0.24);
         sound.setSpeed(testParam2/128.0);
+    }
+    if(key == 'u'){
+        //b_FlowToolsBarActivate = true;
+        simpleMovie.play();
+
     }
 }
 
@@ -418,7 +415,7 @@ void ofApp::setupGui() {
     velocityLineSmooth.addListener(this, &ofApp::setVelocityLineSmooth);
     
     testParameters.setName("test param");
-    testParameters.add(testParam1.set("testParam1", 1, 0, 255));
+    testParameters.add(testParam1.set("testParam1", 128, 0, 255));
     testParameters.add(testParam2.set("testParam2", 128, 0, 255));
     gui.add(testParameters);
     

@@ -133,8 +133,8 @@
 		</draw_flow_res_2>
 	</mouse_right_button>
 	<test_param>
-		<testParam1>1</testParam1>
-		<testParam2>1</testParam2>
+		<testParam1>128</testParam1>
+		<testParam2>128</testParam2>
 	</test_param>
 	<visualizers>
 		<show_scalar>1</show_scalar>

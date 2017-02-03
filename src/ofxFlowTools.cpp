@@ -40,7 +40,21 @@ void ofApp::setupFlowTools(){
     pressureField.setup(flowWidth / 4, flowHeight / 4);
     velocityTemperatureField.setup(flowWidth / 4, flowHeight / 4);
     
+    b_FlowToolsBarActivate=false;
+    i_FlowToolsBarCount=0;
+    
+    // MOUSE DRAW
+    mouseForces.setup(flowWidth, flowHeight, drawWidth, drawHeight);
+    
+    // CAMERA
+    simpleCam.setup(640, 480, true);
+    didCamUpdate = false;
+    cameraFbo.allocate(640, 480);
+    cameraFbo.black();
 
+    
+    simpleMovie.load("back.mov");
+    simpleMovie.setVolume(0);
 }
 
 
@@ -48,17 +62,55 @@ void ofApp::updateFlowTools(){
     deltaTime = ofGetElapsedTimef() - lastTime;
     lastTime = ofGetElapsedTimef();
     
-    simpleCam.update();
+    //simpleCam.update();
+
+    simpleMovie.update();
+
     
-    if (simpleCam.isFrameNew()) {
+    //if (simpleCam.isFrameNew()) {
+    if (simpleMovie.isFrameNew()) {
         ofPushStyle();
         ofEnableBlendMode(OF_BLENDMODE_DISABLED);
         cameraFbo.begin();
         
-        if (doFlipCamera)
-            simpleCam.draw(cameraFbo.getWidth(), 0, -cameraFbo.getWidth(), cameraFbo.getHeight());  // Flip Horizontal
-        else
-            simpleCam.draw(0, 0, cameraFbo.getWidth(), cameraFbo.getHeight());
+        if (doFlipCamera){
+            //simpleCam.draw(cameraFbo.getWidth(), 0, -cameraFbo.getWidth(), cameraFbo.getHeight());  // Flip Horizontal
+            simpleMovie.draw(cameraFbo.getWidth(), 0, -cameraFbo.getWidth(), cameraFbo.getHeight());  // Flip Horizontal
+        }else{
+            //simpleCam.draw(0, 0, cameraFbo.getWidth(), cameraFbo.getHeight());
+            simpleMovie.draw(0, 0, cameraFbo.getWidth(), cameraFbo.getHeight());
+        }
+        
+        /*
+        ofBackground(0, 0, 0);
+        ofFill();
+        ofSetColor(255);
+        ofDrawRectangle(0, ofGetHeight()/2, ofGetWidth(), 400*sin(ofGetElapsedTimeMillis()/100.0));
+        
+        
+        if(b_FlowToolsBarActivate && (i_FlowToolsBarCount==0)){
+            i_FlowToolsBarCount = 10;
+        }
+        if(b_FlowToolsBarActivate && (i_FlowToolsBarCount==1)){
+            i_FlowToolsBarCount = 0;
+            b_FlowToolsBarActivate = false;
+        }
+        if(b_FlowToolsBarActivate && (i_FlowToolsBarCount>0)){
+            i_FlowToolsBarCount -= 1;
+            ofBackground(0, 0, 0);
+            ofFill();
+            ofSetColor(255);
+            ofDrawRectangle(0, ofGetHeight()-100+10*i_FlowToolsBarCount, ofGetWidth(), 30);
+        }
+        */
+        /*ofFill();
+        ofBackground(0, 0, 0);
+        ofSetColor(128,128,0);
+        cout << ((int)(ofGetElapsedTimeMillis()))%ofGetHeight() <<endl;
+        ofDrawRectangle(0, ((int)(ofGetElapsedTimeMillis()/2))%ofGetHeight(), ofGetWidth(), 50);
+        */
+        
+        
         cameraFbo.end();
         ofPopStyle();
         
