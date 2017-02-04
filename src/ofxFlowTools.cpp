@@ -55,6 +55,7 @@ void ofApp::setupFlowTools(){
     
     simpleMovie.load("back.mov");
     simpleMovie.setVolume(0);
+    i_FlowToolAlpha=0;
 }
 
 
@@ -177,7 +178,9 @@ void ofApp::drawFlowTools(){
         //ofTranslate(-ofGetWidth()/2, -ofGetHeight()/2); //when in cam
         //if(doDrawCamBackground.get())drawSource();
         {
-            ofSetColor(255, 255, 255, testParam1);
+            i_FlowToolAlpha = testParam1;
+            ofEnableAlphaBlending();
+            ofSetColor(255, 255, 255, i_FlowToolAlpha);
             drawComposite();
         }
     }

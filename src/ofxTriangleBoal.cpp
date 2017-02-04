@@ -99,13 +99,13 @@ void ofApp::drawTriangleBoal(){
     //Move the coordinate center to screen's center
     //ofTranslate( ofGetWidth()/2, ofGetHeight()/2, 0 );
     ofTranslate(ofPoint(0,-200.0* pow((1.0*i_TriBoalAppearCountBuf/i_TriBoalAppearCount),2),0));
-    ofTranslate(ofPoint(0,-height*0.15,-400));
+    ofTranslate(ofPoint(0,-height*0.15+300,-400));
     drawOneTriangleBoal();
     ofTranslate(ofPoint(400,0,100));
     drawOneTriangleBoal();
     ofTranslate(ofPoint(-800,0,0));
     drawOneTriangleBoal();
-    ofTranslate(ofPoint(200,0,100));
+    ofTranslate(ofPoint(200,-300,100));
     drawOneTriangleBoal();
     ofTranslate(ofPoint(400,0,100));
     drawOneTriangleBoal();
@@ -125,7 +125,7 @@ void ofApp::drawOneTriangleBoal(){
     ofRotate( angle, 0, 1, 0 );			//Rotate the coordinate system along y-axe
     
     //Draw the triangles
-    const float f_triSoundLevel = 60.0;
+    const float f_triSoundLevel = 80.0;
     for (int i=0; i<nTri; i++) {
         ofSetColor( colors[i] );		//Set color
         ofTriangle(vertices[ i*3     ] * min(2.0,0.8 + ofRandom(0.5,1.0)*spectrum_ave_edge1*f_triSoundLevel),

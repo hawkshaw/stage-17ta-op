@@ -99,6 +99,8 @@ class ofApp : public ofBaseApp{
     ofxSPK::Modifier mod;
     ofxSPK::Modifier rot;
     
+    int i_FireParticleScale;
+
     
     /*triangle boal*/
     vector<ofPoint> vertices;
@@ -118,6 +120,7 @@ class ofApp : public ofBaseApp{
     void drawOneTriangleBoal();
     int i_TriBoalAppearCount;
     int i_TriBoalAppearCountBuf;
+    
     
 /*Rolling Cam*/
     ofxRollingCam rollCam;    
@@ -153,6 +156,8 @@ class ofApp : public ofBaseApp{
     //show bar for opticalflow
     bool                b_FlowToolsBarActivate;
     int                 i_FlowToolsBarCount;
+    
+    int                 i_FlowToolAlpha;//0-255
     
     // MouseDraw
     ftDrawMouseForces	mouseForces;
@@ -230,9 +235,22 @@ class ofApp : public ofBaseApp{
     ofTrueTypeFont font;
     int             i_AvsId;
     vector<ofVec3f> vv_AvsPos;//x y
+    vector<float>       vf_RandomAngleZ;
+    
+    ofFbo               myFboAvs;
+    ofxPostGlitch       myGlitchAvs;
+
+    
+    //Flash
+    bool                b_FlashActivate;
+    int                 i_FlashCount;
+
+    //Black For Fade Out
+    int                 i_FadeOutAlpha;
     
     //ofxTimeLine;
-    ofxTimeLine timeLine;
+    ofxTimeLine         timeLine;
+    bool                b_TimeLineManual;
 
     
 };

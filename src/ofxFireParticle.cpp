@@ -36,6 +36,7 @@ void ofApp::setupFireParticle(){
     mod.setPosition(0, -300, 0);
     rot.setup(ofxSPK::Modifier::$PointMass::create(ofxSPK::Zone::$Sphere::create(toSPK(0, 0, 0), 300), SPK::INSIDE_ZONE, 20000, 20), group);
 
+    i_FireParticleScale = 1.0;
 }
 
 
@@ -62,6 +63,7 @@ void ofApp::updateFireParticle(){
 void ofApp::drawFireParticle(){
     ofPushMatrix();
     {
+        ofScale(i_FireParticleScale,i_FireParticleScale,i_FireParticleScale);
         em.setFlow(1500);
         //sys.debugDraw();
         sys.draw();

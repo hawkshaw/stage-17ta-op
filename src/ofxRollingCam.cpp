@@ -72,6 +72,11 @@ void ofxRollingCam::setPos(float _x,float _y,float _z){
     posT.set(_x,_y,_z);
 }
 //--------------------------------------------------------------
+void ofxRollingCam::setDirectPos(float _x,float _y,float _z){
+    posT.set(_x,_y,_z);
+    posN.set(_x,_y,_z);
+}
+//--------------------------------------------------------------
 
 void ofxRollingCam::setRandomScale(float _min,float _max){
     scaleT=ofRandom(_min,_max);

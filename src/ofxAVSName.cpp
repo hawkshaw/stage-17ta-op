@@ -11,21 +11,21 @@
 
 void ofApp::setupAVSName(){
     i_AvsId = 0;
-    font.loadFont(OF_TTF_SANS, 100);
+    font.loadFont(OF_TTF_SANS, 50);
     avs.setup("YUKI TAKAHASHI");
     ofxAVString avs1,avs2,avs3,avs4,avs5,avs6,avs7,avs8,avs9,avs10,avs11,avs12;
     
     avs1.setup("YUKI TAKAHASHI");
-    vv_AvsPos.push_back(ofVec3f(30, 120, 15));
+    vv_AvsPos.push_back(ofVec3f(120, 120, 15));
     avs2.setup("YURINA SHIKANO");
-    vv_AvsPos.push_back(ofVec3f(-30, 0, -15));
+    vv_AvsPos.push_back(ofVec3f(0, 0, -15));
     avs3.setup("SHIHO ONOZAWA");
-    vv_AvsPos.push_back(ofVec3f(30, -120, 15));
+    vv_AvsPos.push_back(ofVec3f(60, -120, 15));
 
     avs4.setup("MANA YARITANI");
     vv_AvsPos.push_back(ofVec3f(0, 60, 15));
     avs5.setup("KOKI HODAMA");
-    vv_AvsPos.push_back(ofVec3f(10, 60, 0));
+    vv_AvsPos.push_back(ofVec3f(20, 60, 0));
 
     avs6.setup("MAKITO KOBAYASHI");
     vv_AvsPos.push_back(ofVec3f(0, -60, 15));
@@ -37,12 +37,12 @@ void ofApp::setupAVSName(){
     avs9.setup("HIROYUKI SHIMA");
     vv_AvsPos.push_back(ofVec3f(20, 100, 0));
     avs10.setup("KYOHEI KIKUCHI");
-    vv_AvsPos.push_back(ofVec3f(30, 100, -15));
+    vv_AvsPos.push_back(ofVec3f(40, 100, -15));
 
     avs11.setup("MASARU MIZUOCHI");
     vv_AvsPos.push_back(ofVec3f(-10, -30, 15));
     avs12.setup("MINAMI BABA");
-    vv_AvsPos.push_back(ofVec3f(-20, -30, 0));
+    vv_AvsPos.push_back(ofVec3f(-30, -30, 0));
 
     v_avs.push_back(avs1);
     v_avs.push_back(avs2);
@@ -56,14 +56,18 @@ void ofApp::setupAVSName(){
     v_avs.push_back(avs10);
     v_avs.push_back(avs11);
     v_avs.push_back(avs12);
+    for(int i=0;i<v_avs.size();i++){
+        vf_RandomAngleZ.push_back(0);
+    }
 }
 
 void ofApp::updateAVSName(){
     int avsParam = timeLine.getParam(AID_AVS);
     ofVec3f avsPos = vv_AvsPos[avsParam];
-    v_avs[avsParam].play(0,800,800);
+    v_avs[avsParam].play(0,600,600);
     //cout << (v_avs[avsParam].getTar()).size() << endl;
     //cout << -20*(unsigned short)(v_avs[avsParam].getTar().size()) << endl;
+    vf_RandomAngleZ[avsParam] = ofRandom(-10.0,10.0);
     rollCam.setPos(avsPos.x, avsPos.y, avsPos.z);
 }
 
@@ -76,15 +80,28 @@ void ofApp::drawAVSName(){
         
         for(int i=0;i<v_avs.size();i++){
             ofPushMatrix();
+            
             ofRotateZ(-vv_AvsPos[i].z);
             ofRotateY(-vv_AvsPos[i].y);
             ofRotateX(-vv_AvsPos[i].x);
             ofTranslate(0, 0,300);
+            ofRotateZ(vf_RandomAngleZ[i]);
             //ofTranslate(0, 0,50);
-            ofScale(0.1,0.1,0.1);
+            
+            ofScale(0.2,0.2,0.2);
             if(v_avs[i].getLastMillis() + 1000 > ofGetElapsedTimeMillis()){
-                font.drawString(v_avs[i], -25*(unsigned short)(v_avs[i].getTar().size()), 0);
+                myFboAvs.begin();
+                //ofBackground(0);
+                ofClearAlpha();
+                ofClear(0);
+                //font.drawString(v_avs[i], -25*(unsigned short)(v_avs[i].getTar().size()), 0);
+                font.drawString(v_avs[i], 30, 30);
+                myFboAvs.end();
+                myGlitchAvs.generateFx();
+                ofRotateX(180);
+                myFboAvs.draw(-30-25*(unsigned short)(v_avs[i].getTar().size()), -30);
             }
+            
             ofPopMatrix();
         }
         ofPopMatrix();

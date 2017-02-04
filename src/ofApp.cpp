@@ -44,17 +44,23 @@ void ofApp::setup(){
     myFbo.allocate( ofGetWidth(), ofGetHeight(),GL_RGBA);
     myGlitch.setup(&myFbo);
     
-    
+    //Fbo Avs
+    myFboAvs.allocate(1200, 150,GL_RGBA);
+    myGlitchAvs.setup(&myFboAvs);
+    myGlitchAvs.setFx(OFXPOSTGLITCH_GLOW , true);
+
     /*String AVS*/
     setupAVSName();
     
     b_soundCountKey=false;
+    i_FadeOutAlpha=0;
+    b_TimeLineManual = false;
 }
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    timeLine.update(sound.getPosition());
+    if(!b_TimeLineManual)timeLine.update(sound.getPosition());
     
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
 
@@ -66,13 +72,36 @@ void ofApp::update(){
 
     rollCam.update();   //rollCam's rotate update.
     
-    if(timeLine.getState(AID_AVS))updateAVSName();
     
+    /*time line*/
+    if(timeLine.getState(AID_INIT)){
+    }
+    if(timeLine.getState(AID_AVS))updateAVSName();
+    if(timeLine.getState(AID_FLOW_TOOLS));
+    if(timeLine.getState(AID_FIRE_PARTICLE)){
+        switch(timeLine.getParam(AID_FIRE_PARTICLE)){
+            case 0:
+                i_FireParticleScale = 10;
+                break;
+            case 1:
+                i_FireParticleScale = 1.0;
+                break;
+        }
+    }
+    i_FireParticleScale = 10;
+    
+    if(timeLine.getState(AID_TRI_BOAL));
+    if(timeLine.getState(AID_FIRE_FLUID));
+    if(timeLine.getState(AID_FLASH));
+    if(timeLine.getState(AID_FADE_OUT));
+    if(timeLine.getState(AID_SHAKE));
+    if(timeLine.getState(AID_CAM));
+    /*
     if(timeLine.getState(AID_TRI_BOAL)){
         plusTriangleBoal();
     }else{
         minusTriangleBoal();
-    }
+    }*/
     
 }
 
@@ -91,12 +120,13 @@ void ofApp::draw(){
     
     cam.begin();
     rollCam.begin(); //rollCam begin
-    
+
+    drawAVSName();
     if(pb_DrawFireFluid)drawFireFluid();
     if(pb_DrawBoal)drawTriangleBoal();
     if(pb_DrawFireParticles)drawFireParticle();
+
     
-    drawAVSName();
     
     rollCam.end();  //rollCam end
     cam.end();
@@ -130,18 +160,46 @@ void ofApp::draw(){
     if(b_DrawGui){
         drawGui();
         ofSetColor(255);
-        ofDrawBitmapString(cam.getDistance(), 600, 300);
-        ofDrawBitmapString(sound.getPosition(), 600, 350);
+        //ofDrawBitmapString(cam.getDistance(), 600, 300);
+        //ofDrawBitmapString(sound.getPosition(), 600, 350);
         ofShowCursor();
     }else{
         ofHideCursor();
     }
     ofPopStyle();
 
+    
+    if(b_FlashActivate){
+        if(i_FlashCount==0){
+            i_FlashCount = 255;
+        }
+        if(i_FlashCount<0){
+            i_FlashCount = 0;
+            b_FlashActivate = false;
+        }
+        if(i_FlashCount>0){
+            ofPushStyle();
+            ofEnableAlphaBlending();
+            ofSetColor(255,255,255,i_FlashCount);
+            i_FlashCount -= 10;
+            ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+            ofPopStyle();
+        }
+    }
+
+    if(i_FadeOutAlpha){
+        ofPushStyle();
+        ofEnableAlphaBlending();
+        ofSetColor(0,0,0,i_FadeOutAlpha);
+        ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+        ofPopStyle();
+    }
+    
+    
     if(b_DrawGui){
-        timeLine.draw();
-        ofDrawBitmapString(ofToString(i_TriBoalAppearCount), 800, 600);
-        ofDrawBitmapString(ofToString(i_TriBoalAppearCountBuf), 800, 640);
+        //timeLine.draw();
+        //ofDrawBitmapString(ofToString(i_TriBoalAppearCount), 800, 600);
+        //ofDrawBitmapString(ofToString(i_TriBoalAppearCountBuf), 800, 640);
     }
 }
 
@@ -204,12 +262,10 @@ void ofApp::keyPressed(int key){
         b_TitleShake=true;
     }
     if(key == OF_KEY_UP){
-        v_avs[i_AvsId].play(0,400,400);
-        i_AvsId = MIN(i_AvsId+1,v_avs.size()-1);
+        plusTriangleBoal();
     }
     if(key == OF_KEY_DOWN){
-        v_avs[i_AvsId].play(0,400,400);
-        i_AvsId = MAX(i_AvsId-1,0);
+        minusTriangleBoal();
     }
     if(key == 'r'){
         sound.setPosition(0);
@@ -227,8 +283,26 @@ void ofApp::keyPressed(int key){
     if(key == 'u'){
         //b_FlowToolsBarActivate = true;
         simpleMovie.play();
-
     }
+    if(key == 'k'){
+        b_FlashActivate=true;
+    }
+    if(key == 'i'){
+        //sabi act
+        cam.setPosition(0, 0, 0);
+        cam.setDistance(40);
+        rollCam.setDirectPos(0,0,0);
+    }
+    if(key == 'q'){
+        i_FadeOutAlpha = min(255,i_FadeOutAlpha+1);
+    }
+    if(key == 'a'){
+        i_FadeOutAlpha = max(0,i_FadeOutAlpha-1);
+    }
+    if(key == 'm'){
+        b_TimeLineManual = !b_TimeLineManual;
+    }
+
 }
 
 //--------------------------------------------------------------

@@ -8,15 +8,20 @@
 
 #include "ofMain.h"
 
-#define STEP_NUM 10
-#define ACT_ID_NUM 5
+#define STEP_NUM 33
+#define ACT_ID_NUM 10
 
 enum ACT_ID{
-    AID_AVS = 0,
+    AID_INIT = 0,
+    AID_AVS,
     AID_FLOW_TOOLS,
-    AID_FILE_PARTICLE,
+    AID_FIRE_PARTICLE,
     AID_TRI_BOAL,
     AID_FIRE_FLUID,
+    AID_FLASH,
+    AID_FADE_OUT,
+    AID_SHAKE,
+    AID_CAM,
 };
 
 class ofxTimeLine : public ofBaseApp{

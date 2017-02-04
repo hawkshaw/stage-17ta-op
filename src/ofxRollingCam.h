@@ -23,6 +23,7 @@ public:
     void setCamSpeed(float _camSpeed);
     void setRandomPos(float _randomAngle=180);
     void setPos(float _x,float _y,float _z);
+    void setDirectPos(float _x,float _y,float _z);
     void setRandomScale(float _min,float _max);
     void setScale(float _dist);
 
