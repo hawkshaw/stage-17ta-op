@@ -220,9 +220,11 @@ class ofApp : public ofBaseApp{
     ofParameter<bool>   pb_DrawFireParticles;
     ofParameter<bool>   pb_DrawDelaunay;
     ofParameter<bool>   pb_DrawBoal;
+    bool                b_DrawAVS;
     
     //Title Shake Logo
     bool                b_TitleShake;
+    bool                b_TitleShakeManual;
     ofImage             imgTitleShake;
     
     //shake Fbo

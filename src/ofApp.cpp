@@ -34,6 +34,7 @@ void ofApp::setup(){
     
     //TitleShake
     b_TitleShake = false;
+    b_TitleShakeManual = false;
     imgTitleShake.load("titleshake.png");
     
     //cam.setPosition(0, -100, 100);
@@ -75,12 +76,31 @@ void ofApp::update(){
     
     /*time line*/
     if(timeLine.getState(AID_INIT)){
+        pb_DrawFireFlow=false;
+        pb_DrawFireFluid=false;
+        pb_DrawFireParticles=false;
+        pb_DrawDelaunay=false;
+        pb_DrawBoal=false;
+        i_FadeOutAlpha=0;
+        rollCam.setPos(0, 0, 0);
+        b_DrawAVS=true;
     }
     if(timeLine.getState(AID_AVS))updateAVSName();
-    if(timeLine.getState(AID_FLOW_TOOLS));
+    if(timeLine.getState(AID_FLOW_TOOLS)){
+        switch(timeLine.getParam(AID_FLOW_TOOLS)){
+            case 0:
+                pb_DrawFireFlow=true;
+                simpleMovie.play();
+                break;
+            case 1:
+                pb_DrawFireFlow=false;
+                break;
+        }
+    }
     if(timeLine.getState(AID_FIRE_PARTICLE)){
         switch(timeLine.getParam(AID_FIRE_PARTICLE)){
             case 0:
+                pb_DrawFireParticles=true;
                 i_FireParticleScale = 10;
                 break;
             case 1:
@@ -88,14 +108,53 @@ void ofApp::update(){
                 break;
         }
     }
-    i_FireParticleScale = 10;
-    
-    if(timeLine.getState(AID_TRI_BOAL));
-    if(timeLine.getState(AID_FIRE_FLUID));
-    if(timeLine.getState(AID_FLASH));
-    if(timeLine.getState(AID_FADE_OUT));
-    if(timeLine.getState(AID_SHAKE));
-    if(timeLine.getState(AID_CAM));
+    if(timeLine.getState(AID_TRI_BOAL)){
+        switch(timeLine.getParam(AID_TRI_BOAL)){
+            case 0:
+                pb_DrawBoal=true;
+                plusTriangleBoal();
+                break;
+            case 1:
+                minusTriangleBoal();
+                break;
+        }
+    }
+    if(timeLine.getState(AID_FIRE_FLUID)){
+        switch(timeLine.getParam(AID_FIRE_FLUID)){
+            case 0:
+                pb_DrawFireFluid=true;
+                break;
+            case 1:
+                pb_DrawFireFluid=false;
+                break;
+        }
+    }
+    if(timeLine.getState(AID_FLASH)){
+        b_FlashActivate=true;
+        if(timeLine.getParam(AID_FLASH)==1){
+            b_DrawAVS=false;
+            pb_DrawFireParticles=false;
+        }
+    }
+    if(timeLine.getState(AID_FADE_OUT))i_FadeOutAlpha = min(255,i_FadeOutAlpha+5);
+    if(timeLine.getState(AID_SHAKE)){
+        switch(timeLine.getParam(AID_SHAKE)){
+            case 0:
+                break;
+            case 1:
+                myGlitch.setFx(OFXPOSTGLITCH_GLOW	, true);
+                break;
+        }
+        b_TitleShake = true;
+    }else{
+        b_TitleShake = false;
+    }
+    if(timeLine.getState(AID_CAM)){
+        cam.setPosition(0, 0, 0);
+        cam.setDistance(40);
+        rollCam.setDirectPos(0,0,0);
+        pb_DrawFireParticles=true;
+    }
     /*
     if(timeLine.getState(AID_TRI_BOAL)){
         plusTriangleBoal();
@@ -107,7 +166,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    if(b_TitleShake){
+    if(b_TitleShake || b_TitleShakeManual){
         myFbo.begin();
     }
     ofBackground(0);
@@ -121,7 +180,7 @@ void ofApp::draw(){
     cam.begin();
     rollCam.begin(); //rollCam begin
 
-    drawAVSName();
+    if(b_DrawAVS)drawAVSName();
     if(pb_DrawFireFluid)drawFireFluid();
     if(pb_DrawBoal)drawTriangleBoal();
     if(pb_DrawFireParticles)drawFireParticle();
@@ -143,14 +202,14 @@ void ofApp::draw(){
         ofPopStyle();
     }
 
-    if(b_TitleShake){
+    if(b_TitleShake || b_TitleShakeManual){
         ofEnableAlphaBlending();
         //imgTitleShake.draw(50*ofRandom(-1.0,1.0), 50*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
         imgTitleShake.draw((ofRandom(-1.0,1.0)-2)*ofGetWidth(), (ofRandom(-1.0,1.0)-2)*ofGetHeight(), ofGetWidth()*5, ofGetHeight()*5);
         imgTitleShake.draw(20*ofRandom(-1.0,1.0), 20*ofRandom(-1.0,1.0), ofGetWidth(), ofGetHeight());
     }
     
-    if(b_TitleShake){
+    if(b_TitleShake || b_TitleShakeManual){
         myFbo.end();
         myGlitch.generateFx();
         myFbo.draw(0, 0);
@@ -259,7 +318,7 @@ void ofApp::keyPressed(int key){
     }
 
     if(key == OF_KEY_RETURN){
-        b_TitleShake=true;
+        b_TitleShakeManual=true;
     }
     if(key == OF_KEY_UP){
         plusTriangleBoal();
@@ -308,7 +367,7 @@ void ofApp::keyPressed(int key){
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
     if(key == OF_KEY_RETURN){
-        b_TitleShake=false;
+        b_TitleShakeManual=false;
     }
     switch(key){
         case 't':

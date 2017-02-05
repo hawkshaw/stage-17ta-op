@@ -8,7 +8,8 @@
 
 #include "ofMain.h"
 
-#define STEP_NUM 33
+#define TIMELINE_SPEED 1
+#define STEP_NUM 34
 #define ACT_ID_NUM 10
 
 enum ACT_ID{

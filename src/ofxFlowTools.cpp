@@ -56,6 +56,8 @@ void ofApp::setupFlowTools(){
     simpleMovie.load("back.mov");
     simpleMovie.setVolume(0);
     i_FlowToolAlpha=0;
+    
+    myGlitch.setFx(OFXPOSTGLITCH_SHAKER	, true);
 }
 
 
