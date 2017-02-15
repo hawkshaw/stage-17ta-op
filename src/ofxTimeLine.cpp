@@ -5,6 +5,7 @@
 #include "ofxTimeLine.h"
 
 #define f_TimeLineSabi 0.262
+#define f_TimeLineLag 0.001
 
 //--------------------------------------------------------------
 ofxTimeLine::ofxTimeLine(){
@@ -56,8 +57,8 @@ void ofxTimeLine::setup(){
         {0.175388/TIMELINE_SPEED,0.175388/TIMELINE_SPEED+0.01,AID_AVS,4},
         
         {0.187747/TIMELINE_SPEED,0.187747/TIMELINE_SPEED+0.01,AID_AVS,5},
-        {0.194081/TIMELINE_SPEED,0.194081/TIMELINE_SPEED+0.01,AID_AVS,6},
-        {0.200414/TIMELINE_SPEED,0.200414/TIMELINE_SPEED+0.01,AID_AVS,7},
+        {0.196081/TIMELINE_SPEED,0.196081/TIMELINE_SPEED+0.01,AID_AVS,6},
+        {0.202414/TIMELINE_SPEED,0.202414/TIMELINE_SPEED+0.01,AID_AVS,7},
         
         {0.212774/TIMELINE_SPEED,0.212774/TIMELINE_SPEED+0.01,AID_AVS,8},
         {0.225031/TIMELINE_SPEED,0.225031/TIMELINE_SPEED+0.01,AID_AVS,9},
@@ -84,13 +85,20 @@ void ofxTimeLine::setup(){
         {0.252509,0.252509+0.001,AID_FLASH,0},//(o) mo
         {0.254654,0.254654+0.001,AID_FLASH,1},//(u)
         
-        {0.101024,0.102556,AID_SHAKE,0},//shake one time
+        
+        {0.100824-f_TimeLineLag,0.102056-f_TimeLineLag,AID_SHAKE,0},//shake one time
+        {0.103271-f_TimeLineLag,0.105629-f_TimeLineLag,AID_SHAKE,0},//shake one time
+        {0.10644-f_TimeLineLag,0.108087-f_TimeLineLag,AID_SHAKE,0},//shake one time
+        {0.109-f_TimeLineLag,0.110937-f_TimeLineLag,AID_SHAKE,0},//shake one time
+        {0.111647-f_TimeLineLag,0.112577-f_TimeLineLag,AID_SHAKE,0},//shake one time
+
+/*        {0.101024,0.102556,AID_SHAKE,0},//shake one time
         {0.103271,0.106029,AID_SHAKE,0},//shake one time
         {0.10654,0.108787,AID_SHAKE,0},//shake one time
         {0.1094,0.111137,AID_SHAKE,0},//shake one time
         {0.111647,0.112077,AID_SHAKE,0},//shake one time
-
-        {0.113384,0.161291,AID_SHAKE,1},//shake long (intro melo)
+*/
+        {0.113384-f_TimeLineLag,0.161291,AID_SHAKE,1},//shake long (intro melo)
 
         {0.361909,0.361909+0.3,AID_FADE_OUT,0},//start
         

@@ -136,7 +136,7 @@ void ofApp::update(){
             pb_DrawFireParticles=false;
         }
     }
-    if(timeLine.getState(AID_FADE_OUT))i_FadeOutAlpha = min(255,i_FadeOutAlpha+5);
+    if(timeLine.getState(AID_FADE_OUT))i_FadeOutAlpha = min(255,i_FadeOutAlpha+2);
     if(timeLine.getState(AID_SHAKE)){
         switch(timeLine.getParam(AID_SHAKE)){
             case 0:
