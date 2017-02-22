@@ -16,33 +16,33 @@ void ofApp::setupAVSName(){
     ofxAVString avs1,avs2,avs3,avs4,avs5,avs6,avs7,avs8,avs9,avs10,avs11,avs12;
     
     avs1.setup("YUKI TAKAHASHI");
-    vv_AvsPos.push_back(ofVec3f(50, -100, 15));
+    vv_AvsPos.push_back(ofVec3f(50, 40, 15));
     avs2.setup("YURINA SHIKANO");
-    vv_AvsPos.push_back(ofVec3f(30, -100, 0));
+    vv_AvsPos.push_back(ofVec3f(30, -40, 0));
     avs3.setup("SHIHO ONOZAWA");
-    vv_AvsPos.push_back(ofVec3f(10, -100, -15));
+    vv_AvsPos.push_back(ofVec3f(10, -140, -15));
 
     avs4.setup("MANA YARITANI");
-    vv_AvsPos.push_back(ofVec3f(0, 10, 15));
+    vv_AvsPos.push_back(ofVec3f(0, 20, 15));
     avs5.setup("KOKI HODAMA");
-    vv_AvsPos.push_back(ofVec3f(20, 10, 0));
+    vv_AvsPos.push_back(ofVec3f(20, 20, 0));
 
     avs6.setup("MAKITO KOBAYASHI");
-    vv_AvsPos.push_back(ofVec3f(0, -10, 15));
+    vv_AvsPos.push_back(ofVec3f(0, -10, 0));
     avs7.setup("GO NAKATANI");
-    vv_AvsPos.push_back(ofVec3f(20, -10, 0));
+    vv_AvsPos.push_back(ofVec3f(10, -10, 0));
     avs8.setup("HARUKA NAKAI");
-    vv_AvsPos.push_back(ofVec3f(40, -10, -15));
+    vv_AvsPos.push_back(ofVec3f(20, -10, 0));
     
     avs9.setup("HIROYUKI SHIMA");
-    vv_AvsPos.push_back(ofVec3f(10, -50, 0));
+    vv_AvsPos.push_back(ofVec3f(-30, -60, 0));
     avs10.setup("KYOHEI KIKUCHI");
-    vv_AvsPos.push_back(ofVec3f(30, -50, -15));
+    vv_AvsPos.push_back(ofVec3f(-50, -60, -15));
 
     avs11.setup("MASARU MIZUOCHI");
-    vv_AvsPos.push_back(ofVec3f(-10, -80, 15));
+    vv_AvsPos.push_back(ofVec3f(-15, -100, 15));
     avs12.setup("MINAMI BABA");
-    vv_AvsPos.push_back(ofVec3f(-30, -80, 0));
+    vv_AvsPos.push_back(ofVec3f(-40, -100, 0));
 
     v_avs.push_back(avs1);
     v_avs.push_back(avs2);
@@ -68,7 +68,7 @@ void ofApp::updateAVSName(){
     v_avs[avsParam].play(0,600,600);
     //cout << (v_avs[avsParam].getTar()).size() << endl;
     //cout << -20*(unsigned short)(v_avs[avsParam].getTar().size()) << endl;
-    vf_RandomAngleZ[avsParam] = ofRandom(-10.0,10.0);
+    vf_RandomAngleZ[avsParam] = ofRandom(-5.0,5.0);
     if(avsParam<3){
         vf_RandomAngleZ[avsParam] = 0;
     }
@@ -94,7 +94,7 @@ void ofApp::drawAVSName(){
             
             ofScale(0.2,0.2,0.2);
             int stayMillis = 5000;
-            if (i<3)stayMillis = 1000;
+            if (i<3)stayMillis = 3000;
             if(v_avs[i].getLastMillis() + stayMillis > ofGetElapsedTimeMillis()){
                 myFboAvs.begin();
                 //ofBackground(0);
@@ -105,9 +105,10 @@ void ofApp::drawAVSName(){
                 myFboAvs.end();
                 myGlitchAvs.generateFx();
                 ofRotateX(180);
+                ofTranslate(0, -230,0);
                 if(i<3){
  //                   myFboAvs.draw(-10-19*(unsigned short)(v_avs[i].getTar().size()), -230);
-                    myFboAvs.draw(-220-5*(unsigned short)(v_avs[i].getTar().size()), -230);
+                    myFboAvs.draw(-220-5*(unsigned short)(v_avs[i].getTar().size()), -30);
                 }else{
                     myFboAvs.draw(-25*(unsigned short)(v_avs[i].getTar().size()), -30);
                 }
